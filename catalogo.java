@@ -4,12 +4,12 @@ package petcita;
 
 public class catalogo {
     private int  id_catalogo;
-    private String disponivel;
+    private Boolean disponivel;
     private Double valor;
     private String descricao;
     private String categoria;
 
-    public catalogo (int id_catalogo, String disponivel, Double valor, String descricao, String categoria) {
+    public catalogo (int id_catalogo, Boolean disponivel, Double valor, String descricao, String categoria) {
         this.id_catalogo = id_catalogo;
         this.disponivel = disponivel;
         this.valor = valor;
@@ -25,11 +25,16 @@ public class catalogo {
         this.id_catalogo = id_catalogo;
     }
 
+    // ajustar o boolean conforme a necessidade e chamar na main a função
     public String getDisponivel() {
-        return disponivel;
+        if (disponivel) {
+            return "Produto disponível";
+        } else {
+            return "Produto indisponível";
+        }
     }
 
-    public void setDisponivel(String disponivel) {
+    public void setDisponivel(Boolean disponivel) {
         this.disponivel = disponivel;
     }
 
