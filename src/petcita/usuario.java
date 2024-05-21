@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-
 public class Usuario {
     private int IdUsuario;
     private String Nome;
@@ -105,5 +104,28 @@ public class Usuario {
         String SQL = String.format("INSERT INTO usuario (nome, telefone, senha, login, email) VALUES ('%s','%s','%s','%s','%s')", this.getNome(), this.getTelefone(), this.getSenha(), this.getLogin(), this.getEmail());
         
         this.setIdUsuario(DataBaseUtils.insertRetornaId(conn, SQL));
+    }
+    
+    /**
+     *
+     * @param conn
+     * @return
+     * @throws SQLException
+     */
+    public boolean validaLogin(Connection conn) throws SQLException
+    {
+        String SQL = String.format("SELECT * FROM usuario WHERE login = '%s' AND senha = '%s'", this.getLogin(), this.getSenha());
+        
+        ResultSet resposta = DataBaseUtils.select(conn, SQL);
+        
+        if(!resposta.next())
+            throw new SQLException("Nenhum usuário encontrado, login e/ou senha incorretos");
+        
+        this.Nome = resposta.getString("nome");
+        this.Telefone = resposta.getString("telefone");
+        this.Email = resposta.getString("email");
+        this.IdUsuario = resposta.getInt("id_usuario");
+       
+        return true;
     }
 }

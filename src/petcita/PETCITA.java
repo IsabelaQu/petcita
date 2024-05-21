@@ -34,8 +34,7 @@ public class PETCITA {
                     System.out.println("----------Faça Login ou Crie seu usuário----------");
                     System.out.println("");
 
-
-                    while(!respostaInicio.equals("L") && !respostaInicio.equals("N") && !respostaInicio.equals("S")){
+                    while(!respostaInicio.equalsIgnoreCase("L") && !respostaInicio.equalsIgnoreCase("N") && !respostaInicio.equalsIgnoreCase("S")){
 
                         System.out.println("Deseja fazer Login, Criar um novo Usuário ou Sair? Login -> L, Novo Usuário -> N, Sair -> S");
                         System.out.print("Resposta: ");
@@ -43,13 +42,15 @@ public class PETCITA {
 
                     }
 
-                    if(respostaInicio.equals("S"))
+                    if(respostaInicio.equalsIgnoreCase("S"))
                         break;
                     
                     Connection conn = DataBaseUtils.getConnection("PETCITA");
                     
-                    if(respostaInicio.equals("N"))
+                    if(respostaInicio.equalsIgnoreCase("n"))
                     {
+                        respostaInicio = "";
+                        
                         Cliente cli = new Cliente();
                         
                         System.out.println("Digite seu nome:");
@@ -95,11 +96,70 @@ public class PETCITA {
                                            
                     }
                     
-                    if(respostaInicio.equals("L"))
+                    if(respostaInicio.equalsIgnoreCase("l"))
                     {
+                        String respostaLogin = "";
                         
-                         System.out.println("Faça login:");
-                         break;
+                        while(!respostaLogin.equalsIgnoreCase("c") && !respostaLogin.equalsIgnoreCase("f")){
+
+                            System.out.println("Deseja fazer Login como Cliente ou Funcionário? Cliente -> C ou Funcionário -> F");
+                            System.out.print("Resposta: ");
+                            respostaLogin = leitor.nextLine();
+
+                        }
+                        
+                        if(respostaLogin.equalsIgnoreCase("c"))
+                        {
+                            Cliente cli = new Cliente();
+                            
+                            System.out.println("Digite seu login: ");
+                            cli.setLogin(leitor.nextLine());
+                            
+                            System.out.println("Digite sua senha: ");
+                            cli.setSenha(leitor.nextLine());
+                            
+                            if(cli.validaLogin(conn))
+                                System.out.println("Login Concluido!");
+                                break;
+                                // Continuar Main de cliente aqui
+                                    // Ver catalogo de produtos
+                                    // Ver catologo de serviços
+                                    
+                                    //Escolher serviço -> mostra serviços e pede pra digitar o id
+                                        // insere na tabela de pedidos e pedido_agendamento
+                                    //Escolher produto -> mostra produtos e pede pra digitar o id
+                                        // insere na tabela de pedidos e pedido_item
+                                        
+                                    // Ver carrinho
+                                        // Mostra produtos da tab pedido_itens
+                                        // Mostra produtos da tab pedido_agendamentos
+                                    // Remover Produtos do Carrinho
+                                        // Mostra produtos da tab pedido_itens e pede o id desejado pra cancelar
+                                    // Cancelar Agendamentos no Carrinho
+                                        // Mostra produtos da tab pedido_agendamentos e pede o id desejado pra cancelar
+                        }
+                        
+                        if(respostaLogin.equalsIgnoreCase("f"))
+                        {
+                            Funcionario fun = new Funcionario();
+                            
+                            System.out.println("Digite seu login: ");
+                            fun.setLogin(leitor.nextLine());
+                            
+                            System.out.println("Digite sua senha: ");
+                            fun.setSenha(leitor.nextLine());
+                            
+                            if(fun.validaLogin(conn))
+                                System.out.println("Login Concluido!");
+                                break;
+                                // Continuar Main de funcionario aqui
+                                    // Idem do cliente
+                                    // Cadastrar Produto
+                                    // Cadastrar Serviço
+                                    // Cadastrar Animal
+                                        // mostrar lista de clientes, pedir o id e dps demais infos.
+                        }
+                        
                     }
             }
             catch(Exception ex)

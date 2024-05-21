@@ -32,12 +32,24 @@ public class DataBaseUtils {
     public static int insertRetornaId(Connection conn, String Sql) throws SQLException
     {
         PreparedStatement cmd = conn.prepareStatement(Sql, PreparedStatement.RETURN_GENERATED_KEYS);
-        cmd.executeUpdate();
-        ResultSet resposta = cmd.getGeneratedKeys();
-        //ResultSet resposta = cmd.executeQuery(Sql+" RETURNING "+retorno);
-        resposta.next();
         
-        return resposta.getInt(1);
+        int registrosGerados = cmd.executeUpdate();
+        
+        // Valida se realemente gerou elementos
+        if (registrosGerados > 0) {
+            // Busca os ids gerados
+            ResultSet resposta = cmd.getGeneratedKeys();
+
+            // Move para o próximo, nesse caso primeiro item do ResultSet
+            if (resposta.next()) {
+                // Retorna o Id gerado pelo Insert
+                return resposta.getInt(1);
+            } else {
+                throw new SQLException("Nenhum ID de usuário encontrado.");
+            }
+        } else {
+            throw new SQLException("Nenhum usuário foi gerado.");
+        }
     }
     
     public static boolean delete(Connection conn, String Sql) throws SQLException
@@ -46,6 +58,15 @@ public class DataBaseUtils {
         cmd.executeUpdate(Sql);
 
         return true;
+    }
+    
+    public static ResultSet select(Connection conn, String Sql) throws SQLException
+    {
+        Statement cmd = conn.createStatement();
+        //return cmd.executeQuery(Sql);
+         
+        return cmd.executeQuery(Sql);
+        
     }
 
 }
