@@ -1,33 +1,41 @@
 
 package petcita; //definir o nome da main para importar os packages
 
-public class usuario {
-    private int id_usuario;
-    private String nome;
-    private String telefone;
-    private String senha;
-    private String login;
-    private String email;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
-    public usuario (int id_usuario,String nome, String telefone, String senha, String login, String email) {
-        this.id_usuario = id_usuario;
-        this.nome = nome;
-        this.telefone = telefone;
-        this.senha = senha;
-        this.login = login;
-        this.email = email;
+
+public class Usuario {
+    private int IdUsuario;
+    private String Nome;
+    private String Telefone;
+    private String Senha;
+    private String Login;
+    private String Email;
+    
+    public Usuario()
+    {}
+
+    public Usuario (String nome, String telefone, String senha, String login, String email) {
+        this.Nome = nome;
+        this.Telefone = telefone;
+        this.Senha = senha;
+        this.Login = login;
+        this.Email = email;
     }
 
-    public int getId_usuario() {
-        return id_usuario;
+    public int getIdUsuario() {
+        return IdUsuario;
     }
 
-    public void setId_usuario(int id_usuario) {
-        this.id_usuario = id_usuario;
+    public void setIdUsuario(int IdUsuario) {
+        this.IdUsuario = IdUsuario;
     }
 
     public String getNome() {
-        return nome;
+        return Nome;
     }
 
     public void setNome(String nome) throws Exception {
@@ -35,19 +43,19 @@ public class usuario {
             throw new Exception("O campo nome não pode ser vazio");
         }
         
-        this.nome = nome;
+        this.Nome = nome;
     }
 
     public String getTelefone() {
-        return telefone;
+        return Telefone;
     }
 
     public void setTelefone(String telefone) {
-        this.telefone = telefone;
+        this.Telefone = telefone;
     }
 
     public String getSenha() {
-        return senha;
+        return Senha;
     }
 
     public void setSenha(String senha) throws Exception { 
@@ -62,11 +70,11 @@ public class usuario {
         } else if (senha.length() < 6 || senha.length() > 15) { //Esta linha verifica se o comprimento da senha é menor que 6 caracteres ou maior que 15 caracteres.
             throw new Exception("A senha deve ter entre 6 e 15 caracteres"); 
     }
-        this.senha = senha;
+        this.Senha = senha;
     }
 
     public String getLogin() {
-        return login;
+        return Login;
     }
 
     public void setLogin(String login) throws Exception {
@@ -77,11 +85,11 @@ public class usuario {
             throw new Exception("O login deve ter entre 6 e 15 caracteres");
         }
         
-        this.login = login;
+        this.Login = login;
     }
 
     public String getEmail() {
-        return email;
+        return Email;
     }
 
     public void setEmail(String email) throws Exception {
@@ -89,6 +97,13 @@ public class usuario {
             throw new Exception("O campo email não pode ser vazio");
         }
         
-        this.email = email;
+        this.Email = email;
+    }
+    
+    public void criarUsuario(Connection conn) throws SQLException
+    {        
+        String SQL = String.format("INSERT INTO usuario (nome, telefone, senha, login, email) VALUES ('%s','%s','%s','%s','%s')", this.getNome(), this.getTelefone(), this.getSenha(), this.getLogin(), this.getEmail());
+        
+        this.setIdUsuario(DataBaseUtils.insertRetornaId(conn, SQL));
     }
 }
