@@ -1,9 +1,9 @@
-
-package petcita;
+package petcita.user;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import petcita.DataBaseUtils;
 
 public class Cliente extends Usuario {
     int IdCliente;

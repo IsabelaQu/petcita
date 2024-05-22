@@ -1,10 +1,10 @@
 
-package petcita; //definir o nome da main para importar os packages
+package petcita.user; //definir o nome da main para importar os packages
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import petcita.DataBaseUtils;
 
 public class Usuario {
     private int IdUsuario;
