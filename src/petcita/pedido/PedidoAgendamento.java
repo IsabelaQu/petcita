@@ -6,22 +6,30 @@ import java.sql.SQLException;
 import java.util.Date;
 import petcita.DataBaseUtils;
 
-public class PedidoAgendamento extends Pedido {
-	
+public class PedidoAgendamento {
+	private int     IdUsuario;
 	private int 	IdPedidoAgendamento;
 	private int 	IdCatServico;
 	private int 	IdAnimal;
 	private Date 	DataAgendamento;
 
-	public PedidoAgendamento(int idFuncionario, int idCliente, boolean finalizado, int idPedidoAgendamento, int idCatServico, int idAnimal, Date dataAgendamento) {
-		super(idFuncionario, idCliente, finalizado);
-		IdPedidoAgendamento = idPedidoAgendamento;
+	public PedidoAgendamento(int idUsuario, int idCatServico, int idAnimal, Date dataAgendamento) {
 		IdCatServico = idCatServico;
 		IdAnimal = idAnimal;
+                DataAgendamento = dataAgendamento;
 	}
 
 	public PedidoAgendamento()
 	{}
+        
+        public int getIdUsuario()
+        {
+            return IdUsuario;
+        }
+        
+        public void setIdUsuario(int idUsuario) {
+		IdUsuario = idUsuario;
+	}
 	
 	public int getIdPedidoAgendamento() {
 		return IdPedidoAgendamento;
@@ -55,14 +63,10 @@ public class PedidoAgendamento extends Pedido {
 		DataAgendamento = dataAgendamento;
 	}
 
-	
-	
 	public void criarPedidoAgendamento(Connection conn) throws SQLException
-	{
-	    criarPedido(conn);
-            
-	    String SQL = String.format("INSERT INTO pedido_agendamento (id_pedido, id_cat_servico, id_animal, data_agendamento) "
-	    		+ "VALUES ( %d, %d, %d,%tD)" , this.getIdPedido(), this.getIdCatServico(), this.getIdAnimal(), this.getDataAgendamento());
+	{            
+	    String SQL = String.format("INSERT INTO pedido_agendamento (id_usuario, id_cat_servico, id_animal, data_agendamento) "
+	    		+ "VALUES ( %d, %d, %d,%tD)" , this.getIdUsuario(), this.getIdCatServico(), this.getIdAnimal(), this.getDataAgendamento());
 	    
 	    this.setIdPedidoAgendamento(DataBaseUtils.insertRetornaId(conn, SQL));
 

@@ -5,16 +5,16 @@ import java.sql.SQLException;
 import java.util.Date;
 import petcita.DataBaseUtils;
 
-public class PedidoItem extends Pedido{
-	
+public class PedidoItem{
+	private int     IdUsuario;
 	private int	IdPedidoItem;
 	private int 	IdCatProduto;
 	private int	Quantidade;
 	private Date	DataPedido;
 	
-	public PedidoItem(int idFuncionario, int idCliente, boolean finalizado, int idPedidoItem, int idCatProduto, int quantidade, Date dataPedido) {
-		super(idFuncionario, idCliente, finalizado);
-		IdPedidoItem = idPedidoItem;
+	public PedidoItem(int idUsuario, boolean finalizado, int idPedidoItem, int idCatProduto, int quantidade, Date dataPedido) {
+		IdUsuario = idUsuario;
+                IdPedidoItem = idPedidoItem;
 		IdCatProduto = idCatProduto;
 		Quantidade = quantidade;
 		DataPedido = dataPedido;
@@ -22,7 +22,16 @@ public class PedidoItem extends Pedido{
 
 	public PedidoItem()
 	{}
-	
+        
+        public int getIdUsuario()
+        {
+            return IdUsuario;
+        }
+        
+        public void setIdUsuario(int idUsuario) {
+		IdUsuario = idUsuario;
+	}
+            
 	public int getIdPedidoItem() {
 		return IdPedidoItem;
 	}
@@ -59,10 +68,9 @@ public class PedidoItem extends Pedido{
 
 	public void criarPedidoItens(Connection conn) throws SQLException
 	{
-            criarPedido(conn);
 
-            String SQL = String.format("INSERT INTO pedido_item (id_pedido, id_funcionario, id_cliente, finalizado, id_cat_produto, id_pedido, quantidade, data_pedido) "
-                            + "VALUES ( %d, %d, %d, %b, %d, %d, %tD)" , this.getIdPedido(), this.getIdFuncionario(), this.getIdCliente(), this.isFinalizado(), this.getIdCatProduto(), this.getQuantidade(), this.getDataPedido());
+            String SQL = String.format("INSERT INTO pedido_item (id_usuario, id_cat_produto, quantidade, data_pedido) "
+                            + "VALUES ( %d, %d, %d, %tD)" , this.getIdUsuario(), this.getIdCatProduto(), this.getQuantidade(), this.getDataPedido());
 
             this.setIdPedidoItens(DataBaseUtils.insertRetornaId(conn, SQL));
 	}

@@ -4,11 +4,10 @@
  */
 package petcita;
 
-import petcita.user.Funcionario;
-import petcita.user.Cliente;
 import java.sql.Connection;
 import java.util.Arrays;
 import java.util.Scanner;
+import petcita.user.Usuario;
 
 /**
  *
@@ -20,7 +19,7 @@ public class PETCITA {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        String user = "", password = "", respostaInicio= "";
+        String respostaInicio= "";
         
         int tentativas = 0;
         
@@ -53,34 +52,36 @@ public class PETCITA {
                     {
                         respostaInicio = "";
                         
-                        Cliente cli = new Cliente();
+                        Usuario user = new Usuario();
                         
                         System.out.println("Digite seu nome:");
-                        cli.setNome(leitor.nextLine());
+                        user.setNome(leitor.nextLine());
                         
                         System.out.println("Digite seu telefone:");
-                        cli.setTelefone(leitor.nextLine());
+                        user.setTelefone(leitor.nextLine());
                         
                         System.out.println("Digite seu email:");
-                        cli.setEmail(leitor.nextLine());
+                        user.setEmail(leitor.nextLine());
                         
                         System.out.println("Digite seu CEP:");
-                        cli.setCep(leitor.nextLine());
+                        user.setCep(leitor.nextLine());
                         
                         System.out.println("Digite o numero da sua Residencia:");
-                        cli.setNumeroResidencia(leitor.nextInt());
+                        user.setNumeroResidencia(leitor.nextInt());
                         
                         leitor.nextLine();
                         
                         System.out.println("Digite o login desejado:");
-                        cli.setLogin(leitor.nextLine());
+                        user.setLogin(leitor.nextLine());
                         
                         System.out.println("Digite o senha:");
-                        cli.setSenha(leitor.nextLine());
+                        user.setSenha(leitor.nextLine());
+                        
+                        user.setFuncionario(false);
                         
                         try
                         {
-                            cli.criarCliente(conn);
+                            user.criarUsuario(conn);
                             
                             System.out.println("");
                             System.out.println("---------------------PetCita----------------------");
@@ -112,15 +113,15 @@ public class PETCITA {
                         
                         if(respostaLogin.equalsIgnoreCase("c"))
                         {
-                            Cliente cli = new Cliente();
+                            Usuario userCliente = new Usuario();
                             
                             System.out.println("Digite seu login: ");
-                            cli.setLogin(leitor.nextLine());
+                            userCliente.setLogin(leitor.nextLine());
                             
                             System.out.println("Digite sua senha: ");
-                            cli.setSenha(leitor.nextLine());
+                            userCliente.setSenha(leitor.nextLine());
                             
-                            if(cli.validaLogin(conn))
+                            if(userCliente.validaLogin(conn))
                                 System.out.println("Login Concluido!");
                                 break;
                                 // Continuar Main de cliente aqui
@@ -143,15 +144,15 @@ public class PETCITA {
                         
                         if(respostaLogin.equalsIgnoreCase("f"))
                         {
-                            Funcionario fun = new Funcionario();
+                            Usuario userFuncionario = new Usuario();
                             
                             System.out.println("Digite seu login: ");
-                            fun.setLogin(leitor.nextLine());
+                            userFuncionario.setLogin(leitor.nextLine());
                             
                             System.out.println("Digite sua senha: ");
-                            fun.setSenha(leitor.nextLine());
+                            userFuncionario.setSenha(leitor.nextLine());
                             
-                            if(fun.validaLogin(conn))
+                            if(userFuncionario.validaLogin(conn))
                                 System.out.println("Login Concluido!");
                                 break;
                                 // Continuar Main de funcionario aqui

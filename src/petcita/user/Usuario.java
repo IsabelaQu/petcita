@@ -13,16 +13,22 @@ public class Usuario {
     private String Senha;
     private String Login;
     private String Email;
+    private String Cep;
+    private int NumeroResidencia;
+    private boolean Funcionario;
     
     public Usuario()
     {}
 
-    public Usuario (String nome, String telefone, String senha, String login, String email) {
+    public Usuario (String nome, String telefone, String senha, String login, String email, String cep, int numeroResidencia, boolean funcionario) {
         this.Nome = nome;
         this.Telefone = telefone;
         this.Senha = senha;
         this.Login = login;
         this.Email = email;
+        this.Cep = cep;
+        this.NumeroResidencia = numeroResidencia;
+        this.Funcionario = funcionario;
     }
 
     public int getIdUsuario() {
@@ -99,9 +105,33 @@ public class Usuario {
         this.Email = email;
     }
     
+    public String getCep() {
+        return Cep;
+    }
+
+    public void setCep(String Cep) {
+        this.Cep = Cep;
+    }
+
+    public int getNumeroResidencia() {
+        return NumeroResidencia;
+    }
+
+    public void setNumeroResidencia(int NumeroResidencia) {
+        this.NumeroResidencia = NumeroResidencia;
+    }
+    
+    public boolean getFuncionario() {
+        return Funcionario;
+    }
+
+    public void setFuncionario(boolean funcionario) {
+        this.Funcionario = funcionario;
+    }
+    
     public void criarUsuario(Connection conn) throws SQLException
     {        
-        String SQL = String.format("INSERT INTO usuario (nome, telefone, senha, login, email) VALUES ('%s','%s','%s','%s','%s')", this.getNome(), this.getTelefone(), this.getSenha(), this.getLogin(), this.getEmail());
+        String SQL = String.format("INSERT INTO usuario (nome, telefone, senha, login, email, cep, numero_residencia, funcionario) VALUES ('%s','%s','%s','%s','%s', '%s', '%d', %b)", this.getNome(), this.getTelefone(), this.getSenha(), this.getLogin(), this.getEmail(), this.getCep(), this.getNumeroResidencia(), this.getFuncionario());
         
         this.setIdUsuario(DataBaseUtils.insertRetornaId(conn, SQL));
     }
