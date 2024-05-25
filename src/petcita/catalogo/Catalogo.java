@@ -17,6 +17,9 @@ public class Catalogo {
     private Double valor;
     private String descricao;
     private String categoria;
+    
+    public Catalogo ()
+    {}
 
     public Catalogo ( Boolean disponivel, Double valor, String descricao, String categoria) 
     {
@@ -73,6 +76,13 @@ public class Catalogo {
         String SQL = String.format("INSERT INTO catalogo (disponivel, valor, descricao, categoria) VALUES (%d,%s,%s,%s)", this.getDisponivel(), this.getValor(), this.getDescricao(), this.getCategoria());
 
         this.setIdCatalogo(DataBaseUtils.insertRetornaId(conn, SQL));
+    }
+
+    public void alterarItemCatologo(Connection conn) throws SQLException
+    {
+        String SQL = String.format("UPDATE catalogo SET disponivel = %b, valor = %f, descricao = '%s', categoria = '%s' WHERE id_catalogo = %d", this.getDisponivel(), this.getValor(), this.getDescricao(), this.getCategoria(), this.getIdCatalogo());
+        
+        DataBaseUtils.insertRetornaId(conn, SQL);
     }
     
     public List<String> exibirCatalogo(Connection conn) throws SQLException

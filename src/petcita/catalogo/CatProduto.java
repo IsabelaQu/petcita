@@ -16,6 +16,9 @@ public class CatProduto extends Catalogo{
     private String fornecedor;
     private Date dtValidade;
     private Date dtRegistro;
+    
+    public CatProduto()
+    {}
 
     public CatProduto(Boolean disponivel, Double valor, String descricao, String categoria, int idCatProduto, String fornecedor, Date dtValidade, Date dtRegistro) {
             super(disponivel, valor, descricao, categoria);

@@ -1,6 +1,7 @@
 package petcita.pedido;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import petcita.DataBaseUtils;
@@ -23,20 +24,20 @@ public class PedidoItem{
 	public PedidoItem()
 	{}
         
-        public int getIdUsuario()
-        {
-            return IdUsuario;
-        }
-        
-        public void setIdUsuario(int idUsuario) {
-		IdUsuario = idUsuario;
+	public int getIdUsuario()
+	{
+		return IdUsuario;
+	}
+	
+	public void setIdUsuario(int idUsuario) {
+	IdUsuario = idUsuario;
 	}
             
 	public int getIdPedidoItem() {
 		return IdPedidoItem;
 	}
 
-	public void setIdPedidoItens(int idPedidoItens) {
+	public void setIdPedidoItem(int idPedidoItens) {
 		IdPedidoItem = idPedidoItens;
 	}
 
@@ -68,11 +69,65 @@ public class PedidoItem{
 
 	public void criarPedidoItens(Connection conn) throws SQLException
 	{
+		String SQL = String.format("INSERT INTO pedido_item (id_usuario, id_cat_produto, quantidade, data_pedido) "
+						+ "VALUES ( %d, %d, %d, %tD)" , this.getIdUsuario(), this.getIdCatProduto(), this.getQuantidade(), this.getDataPedido());
 
-            String SQL = String.format("INSERT INTO pedido_item (id_usuario, id_cat_produto, quantidade, data_pedido) "
-                            + "VALUES ( %d, %d, %d, %tD)" , this.getIdUsuario(), this.getIdCatProduto(), this.getQuantidade(), this.getDataPedido());
+		this.setIdPedidoItem(DataBaseUtils.insertRetornaId(conn, SQL));
+	}
 
-            this.setIdPedidoItens(DataBaseUtils.insertRetornaId(conn, SQL));
+	public void deletarPedidoAgendamento(Connection conn)
+	{
+		String SQL = String.format("DELETE FROM pedido_item WHERE id_pedido_item = %d", this.getIdPedidoItem());
+
+		try {
+			DataBaseUtils.delete(conn, SQL);
+		} catch (SQLException e) {
+			throw new RuntimeException("Erro ao deletar pedido item", e);
+		}		
+
+	}
+
+	public String listarPedidoItens(Connection conn) throws SQLException {
+		StringBuilder table = new StringBuilder();
+		table.append("+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+\n");
+		table.append("|       ID       |     Nome       |   Descriçao    |    Categoria   |    Valor Un.   |  quantidade    |  Dt. Validade  |   Fornecedor   |   Dt. Pedido   |\n");
+		table.append("+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+\n");
+
+		String SQL = " SELECT "+ 
+						" pedido_item.id_pedido_item, "+ 
+						" catalogo.nome, "+ 
+						" catalogo.descricao, "+ 
+						" catalogo.categoria, "+ 
+						" catalogo.valor, "+ 
+						" pedido_item.quantidade, "+ 
+						" cat_produto.dt_validade, "+ 
+						" cat_produto.fornecedor, "+ 
+						" pedido_item.data_pedido "+ 
+					" FROM pedido_item "+ 
+						" INNER JOIN cat_produto "+ 
+							" ON pedido_item.id_cat_produto = cat_produto.id_cat_produto "+ 
+						" INNER JOIN catalogo "+  
+							" ON cat_produto.id_catalogo = catalogo.id_catalogo"+
+						" WHERE pedido_item.id_usuario = 1; ";
+
+		try (ResultSet rs = DataBaseUtils.select(conn, SQL)) {
+			while (rs.next()) {
+				int idPedidoItem = rs.getInt("id_pedido_item");
+				int quantidade = rs.getInt("quantidade");
+				Date dataPedido = rs.getDate("data_pedido");
+				String nome = rs.getString("nome");
+				String descricao = rs.getString("descricao");
+				String categoria = rs.getString("categoria");
+				double valorUnidade = rs.getDouble("valor");
+				Date dataValidade = rs.getDate("dt_validade");
+				String fornecedor = rs.getString("fornecedor");
+
+				table.append(String.format("|%15d|%15s|%15s|%15s|%15.2f|%15d|%15tD|%15s|%15tD|\n", idPedidoItem, nome, descricao, categoria, valorUnidade, quantidade, dataValidade, fornecedor, dataPedido));
+			}
+		}
+
+		table.append("+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+\n");
+		return table.toString();
 	}
 }
 	

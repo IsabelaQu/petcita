@@ -5,8 +5,14 @@
 package petcita;
 
 import java.sql.Connection;
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Scanner;
+import petcita.catalogo.CatServico;
+import petcita.pedido.PedidoAgendamento;
+import petcita.pedido.PedidoItem;
 import petcita.user.Usuario;
 
 /**
@@ -122,13 +128,31 @@ public class PETCITA {
                             userCliente.setSenha(leitor.nextLine());
                             
                             if(userCliente.validaLogin(conn))
-                                System.out.println("Login Concluido!");
-                                break;
+                            {
                                 // Continuar Main de cliente aqui
                                     // Ver catalogo de produtos
                                     // Ver catologo de serviços
                                     
                                     //Escolher serviço -> mostra serviços e pede pra digitar o id
+                                        PedidoAgendamento pedidoAgendamento = new PedidoAgendamento();
+                                        System.out.println("--------------Escolha entre os produtos abaixo--------------");
+                                        System.out.println("");
+                                        CatServico catServico = new CatServico();
+                                        for(String linha : catServico.exibirCatalogo(conn)) 
+                                        {
+                                            System.out.print(linha);
+                                        }
+                                        System.out.println("-------------Digite o ID do Serviço desejado ---------------");
+                                        System.out.println("Resposta:");
+                                        pedidoAgendamento.setIdCatServico(leitor.nextInt());
+                                        pedidoAgendamento.setIdUsuario(userCliente.getIdUsuario());
+                                        pedidoAgendamento.setDataAgendamento(Date.from(Instant.now()));
+                                        pedidoAgendamento.setIdAnimal();
+                                        
+                                        
+                                        
+                                        
+                                        
                                         // insere na tabela de pedidos e pedido_agendamento
                                     //Escolher produto -> mostra produtos e pede pra digitar o id
                                         // insere na tabela de pedidos e pedido_item
@@ -140,6 +164,7 @@ public class PETCITA {
                                         // Mostra produtos da tab pedido_itens e pede o id desejado pra cancelar
                                     // Cancelar Agendamentos no Carrinho
                                         // Mostra produtos da tab pedido_agendamentos e pede o id desejado pra cancelar
+                            }
                         }
                         
                         if(respostaLogin.equalsIgnoreCase("f"))

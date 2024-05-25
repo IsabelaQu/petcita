@@ -22,6 +22,9 @@ public class CatServico extends Catalogo {
         this.ServicoInterno = servicoInterno;
     }
     
+    public CatServico()
+    {}
+   
     //TODO: ADICIONAR EXCEPTIONS DE PREENCHIMENTO + COLOCAR TRY CATCH NO METODO DE EXIBIR
 
     // getters & setters
@@ -48,16 +51,6 @@ public class CatServico extends Catalogo {
 
     public void setServicoInterno(boolean servico_interno) {
         this.ServicoInterno = servico_interno;
-    }
-
-    // inserção no banco
-    public void criarCatServico(Connection conn) throws SQLException {
-        criarCatalogo(conn);
-        
-        // insere valores
-        String SQL = String.format("INSERT INTO cat_servico (id_catalogo, min_duracao, servico_interno) VALUES (%d, %d, '%s')", this.getIdCatalogo(), this.getMinDuracao(), this.getServicoInterno());
-
-        this.setIdCatServico(DataBaseUtils.insertRetornaId(conn, SQL));
     }
     
     @Override
