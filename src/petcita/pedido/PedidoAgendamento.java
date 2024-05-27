@@ -85,7 +85,7 @@ public class PedidoAgendamento {
 
 	}
 
-	public String listarPedidoItens(Connection conn) throws SQLException {
+	public String listarPedidoAgendamentos(Connection conn) throws SQLException {
 		StringBuilder table = new StringBuilder();
 		table.append("+----------------+----------------+----------------+----------------+----------------+-------------------+----------------+----------------+------------------+------------------+\n");
 		table.append("|       ID       |     Nome       |   Descrição    |    Categoria   |      Valor     |  Dt. Agendamento  |   Nome Animal  |     Espécie    |   Porte Animal   |   Serviço Local? |\n");

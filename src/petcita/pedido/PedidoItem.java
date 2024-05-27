@@ -75,7 +75,7 @@ public class PedidoItem{
 		this.setIdPedidoItem(DataBaseUtils.insertRetornaId(conn, SQL));
 	}
 
-	public void deletarPedidoAgendamento(Connection conn)
+	public void deletarPedidoItem(Connection conn)
 	{
 		String SQL = String.format("DELETE FROM pedido_item WHERE id_pedido_item = %d", this.getIdPedidoItem());
 

@@ -40,12 +40,15 @@ public class MenuCliente {
         String opcao = "";
         Scanner leitor = new Scanner(System.in);
         boolean sair = false;
+        PedidoItem carrinhoItem = new PedidoItem();
+        PedidoAgendamento carrinhoAgendamento = new PedidoAgendamento();
+        int idCatServico = 0, idAnimalEscolhido = 0, idCatProduto = 0, quantidadeEscolhida = 0, idPedidoAgendamento = 0, idPedidoItem = 0;
 
         do {
             System.out.println("");
             System.out.println("---------------------PetCita----------------------");
             System.out.println("--------------------------------------------------");
-            System.out.println("1. Escolher servico"); //feito
+            System.out.println("1. Escolher servico"); 
             System.out.println("2. Escolher produto");
             System.out.println("3. Ver carrinho");
             System.out.println("4. Remover produtos do carrinho");
@@ -59,7 +62,6 @@ public class MenuCliente {
                     //1. Escolher servico
                     CatServico catalogoServicos = new CatServico();
                     System.out.println(catalogoServicos.exibirCatalogo(conn));
-                    int idCatServico = 0, idAnimalEscolhido = 0;
                     
                     System.out.println("");
                     System.out.println("Escolha um dos serviços acima para adicionar ao seu Carrinho!");
@@ -95,9 +97,7 @@ public class MenuCliente {
                        System.out.println("Digite um número(ID) presente na lista acima!");
                        break;
                     }
-               
-                    PedidoAgendamento carrinhoAgendamento = new PedidoAgendamento();
-                    
+                                   
                     carrinhoAgendamento.setIdUsuario(this.Cliente.getIdUsuario());
                     carrinhoAgendamento.setDataAgendamento(new Date());
                     carrinhoAgendamento.setIdCatServico(idCatServico);
@@ -109,12 +109,10 @@ public class MenuCliente {
                     
                     break;
                 case "2":
-                    //1. Escolher CatProduto
+                    //2. Escolher produto
                     CatProduto catalogoProdutos = new CatProduto();
                     
-                    System.out.println(catalogoProdutos.exibirCatalogo(conn));
-                    int idCatProduto = 0, quantidadeEscolhida = 0;
-                    
+                    System.out.println(catalogoProdutos.exibirCatalogo(conn));                    
                     System.out.println("");
                     System.out.println("Escolha um dos produtos acima para adicionar ao seu Carrinho!");
                     System.out.print("Digite o numero(ID) do produto desejado:");
@@ -136,11 +134,9 @@ public class MenuCliente {
                     }
                     catch(Exception ex)
                     {
-                       System.out.println("Digite um número(ID) presente na lista acima!");
-                       break;
+                        System.out.println("Digite um número(ID) presente na lista acima!");
+                        break;
                     }
-                    
-                    PedidoItem carrinhoItem = new PedidoItem();
                     
                     carrinhoItem.setIdUsuario(this.Cliente.getIdUsuario());
                     carrinhoItem.setDataPedido(new Date());
@@ -154,14 +150,57 @@ public class MenuCliente {
                     break;
                 case "3":
                     //3. Ver carrinho
+                    carrinhoItem.listarPedidoItens(conn);
                     
+                    System.out.println("");
+                    
+                    carrinhoAgendamento.listarPedidoAgendamentos(conn);
                     
                     break;
                 case "4":
                     //4. Remover produtos do carrinho
+                    carrinhoItem.listarPedidoItens(conn);
+                    
+                    System.out.println("");
+                    System.out.println("Qual produto você gostaria de remover do carrinho?");
+                    
+                    try
+                    {
+                        idPedidoItem = Integer.parseInt(leitor.nextLine());
+                    }
+                    catch(Exception ex)
+                    {
+                        System.out.println("Digite um número(ID) presente na lista acima!");
+                        break;
+                    }
+                    
+                    carrinhoItem.setIdPedidoItem(idPedidoItem);
+                    
+                    carrinhoItem.deletarPedidoItem(conn);
+                    
+                    System.out.println("Produto removido do carrinho com sucesso!!");
                     break;
                 case "5":
                     //5. Cancelar agendamentos no carrinho
+                    carrinhoAgendamento.listarPedidoAgendamentos(conn);
+                    System.out.println("");
+                    System.out.println("Qual agendamento você gostaria de cancelar?");
+                    
+                    try
+                    {
+                        idPedidoAgendamento = Integer.parseInt(leitor.nextLine());
+                    }
+                    catch(Exception ex)
+                    {
+                        System.out.println("Digite um número(ID) presente na lista acima!");
+                        break;
+                    }
+                    
+                    carrinhoAgendamento.setIdPedidoAgendamento(idPedidoAgendamento);
+                    
+                    carrinhoAgendamento.deletarPedidoAgendamento(conn);
+                    
+                    System.out.println("Agendamento cancelado com sucesso!!");
                     break;
                 case "6":
                     //6. Sair
