@@ -129,41 +129,9 @@ public class PETCITA {
                             
                             if(userCliente.validaLogin(conn))
                             {
-                                // Continuar Main de cliente aqui
-                                    // Ver catalogo de produtos
-                                    // Ver catologo de serviços
-                                    
-                                    //Escolher serviço -> mostra serviços e pede pra digitar o id
-                                        PedidoAgendamento pedidoAgendamento = new PedidoAgendamento();
-                                        System.out.println("--------------Escolha entre os produtos abaixo--------------");
-                                        System.out.println("");
-                                        CatServico catServico = new CatServico();
-                                        for(String linha : catServico.exibirCatalogo(conn)) 
-                                        {
-                                            System.out.print(linha);
-                                        }
-                                        System.out.println("-------------Digite o ID do Serviço desejado ---------------");
-                                        System.out.println("Resposta:");
-                                        pedidoAgendamento.setIdCatServico(leitor.nextInt());
-                                        pedidoAgendamento.setIdUsuario(userCliente.getIdUsuario());
-                                        pedidoAgendamento.setDataAgendamento(Date.from(Instant.now()));
-                                        pedidoAgendamento.setIdAnimal();
-                                        
-                                        
-                                        
-                                        
-                                        
-                                        // insere na tabela de pedidos e pedido_agendamento
-                                    //Escolher produto -> mostra produtos e pede pra digitar o id
-                                        // insere na tabela de pedidos e pedido_item
-                                        
-                                    // Ver carrinho
-                                        // Mostra produtos da tab pedido_itens
-                                        // Mostra produtos da tab pedido_agendamentos
-                                    // Remover Produtos do Carrinho
-                                        // Mostra produtos da tab pedido_itens e pede o id desejado pra cancelar
-                                    // Cancelar Agendamentos no Carrinho
-                                        // Mostra produtos da tab pedido_agendamentos e pede o id desejado pra cancelar
+                                MenuCliente menuCliente = new MenuCliente(userCliente);
+                                
+                                menuCliente.clienteMainMenu(conn);
                             }
                         }
                         
