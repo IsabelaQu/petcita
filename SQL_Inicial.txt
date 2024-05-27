@@ -1,0 +1,82 @@
+
+INSERT INTO catalogo (disponivel, valor, nome, descricao, categoria) VALUES
+(true, 50.00, 'Banho', 'Serviço de banho para animais de estimação', 'Serviço'),
+(true, 70.00, 'Tosa', 'Serviço de tosa para animais de estimação', 'Serviço'),
+(true, 100.00, 'Babá por tempo determinado', 'Serviço de babá para animais de estimação', 'Serviço'),
+(true, 25.00, 'Coleira para Cachorro/Gato', 'Coleira ajustável para cachorro ou gato', 'Produto'),
+(true, 30.00, 'Shampoo para Cachorro', 'Shampoo especial para cachorro', 'Produto'),
+(true, 45.00, 'Roupinhas para Animais', 'Roupinhas variadas para animais de estimação', 'Produto'),
+(true, 60.00, 'Ração', 'Ração de alta qualidade para animais', 'Produto'),
+(true, 75.00, 'Cama para Animais', 'Cama confortável para animais de estimação', 'Produto');
+
+INSERT INTO cat_produto (fornecedor, dt_validade, dt_registro, id_catalogo) VALUES
+('Fornecedor A', '2025-12-31', '2024-05-24', 4),  -- Coleira para Cachorro/Gato
+('Fornecedor B', '2024-11-30', '2024-05-24', 5),  -- Shampoo para Cachorro
+('Fornecedor C', '2025-05-31', '2024-05-24', 6),  -- Roupinhas para Animais
+('Fornecedor D', '2024-10-31', '2024-05-24', 7),  -- Ração
+('Fornecedor E', '2025-06-30', '2024-05-24', 8);  -- Cama para Animais
+
+INSERT INTO cat_servico (min_duracao, servico_interno, id_catalogo) VALUES
+(60, true, 1),  -- Banho
+(90, true, 2),  -- Tosa
+(240, false, 3); -- Babá por tempo determinado
+
+INSERT INTO animal (nome, especie, data_nascimento, porte, id_usuario) VALUES ('frederico', 'cachorro', '2020-12-20', 'G', 1);
+INSERT INTO animal (nome, especie, data_nascimento, porte, id_usuario) VALUES ('lilica', 'gato', '2008-12-20', 'G', 1);
+INSERT INTO animal (nome, especie, data_nascimento, porte, id_usuario) VALUES ('Pipoca', 'calopsita', '2020-12-20', 'G', 2);
+INSERT INTO animal (nome, especie, data_nascimento, porte, id_usuario) VALUES ('lerry', 'lagosta', '2005-12-20', 'P', 2);
+
+SELECT 
+	catalogo.nome, 
+	catalogo.descricao, 
+	catalogo.categoria, 
+	catalogo.valor, 
+	pedido_item.quantidade,
+	cat_produto.dt_validade, 
+	cat_produto.fornecedor,
+	pedido_item.data_pedido
+FROM pedido_item
+	INNER JOIN cat_produto 
+		ON pedido_item.id_cat_produto = cat_produto.id_cat_produto
+	INNER JOIN catalogo 
+		ON cat_produto.id_catalogo = catalogo.id_catalogo
+WHERE pedido_item.id_usuario = 1;
+
+select * from cat_produto;
+
+insert into pedido_item (id_cat_produto, quantidade, data_pedido) values (2, 5, '2024-05-14');
+
+select * from pedido_item;
+
+update pedido_item set id_usuario = 2 where id_pedido_item =2;
+
+select * from pedido_agendamento;
+
+insert into pedido_agendamento (id_cat_servico, id_animal, data_agendamento, id_usuario) values (1, 1, '2024-05-24', 1);
+insert into pedido_agendamento (id_cat_servico, id_animal, data_agendamento, id_usuario) values (2, 3, '2024-05-24', 2);
+
+SELECT 
+	catalogo.nome, 
+	catalogo.descricao, 
+	catalogo.categoria, 
+	catalogo.valor, 
+	pedido_agendamento.data_agendamento,
+	cat_servico.min_duracao, 
+	cat_servico.servico_interno,
+	animal.nome,
+    animal.especie,
+    animal.porte
+FROM pedido_agendamento
+	INNER JOIN cat_servico
+		ON pedido_agendamento.id_cat_servico = cat_servico.id_cat_servico
+	INNER JOIN catalogo 
+		ON cat_servico.id_catalogo = catalogo.id_catalogo
+	INNER JOIN animal 
+		ON pedido_agendamento.id_usuario = animal.id_usuario
+WHERE pedido_agendamento.id_usuario = 1;
+
+select * from usuario;
+
+SELECT * FROM ANIMAL;
+
+update usuario set cep = "18087003", numero_residencia = 30 where id_usuario > 0;
