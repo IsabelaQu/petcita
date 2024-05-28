@@ -119,7 +119,7 @@ public class Animal{
     }
    
    public String lerAnimalUsuario(Connection conn, int id_usuario) throws SQLException {
-        String SQL = String.format("SELECT id_animal, nome, especie, data_nascimento, porte FROM animal WHERE id_animal = %d", id_usuario);
+        String SQL = String.format("SELECT id_animal, nome, especie, data_nascimento, porte FROM animal WHERE id_usuario = %d", id_usuario);
        
         StringBuilder table = new StringBuilder();
         
@@ -128,7 +128,7 @@ public class Animal{
             if(rs.next())
             {
                 table.append("+----------------+----------------+----------------+-----------------+----------------+\n");
-                table.append("|       ID       |     Nome       |    Espécie     |  Dt. Nascimento |      Porte     |\n");
+                table.append("|       ID       |     Nome       |    Espï¿½cie     |  Dt. Nascimento |      Porte     |\n");
                 table.append("+----------------+----------------+----------------+-----------------+----------------+\n");
                 while (rs.next()) {
                         int idAnimal = rs.getInt("id_animal");
@@ -137,7 +137,7 @@ public class Animal{
                         char porte = rs.getString("porte").charAt(0);
                         Date dataNascimento = rs.getDate("data_nascimento");
 
-                        table.append(String.format("|%15d|%15s|%15s|%15s|%15tD|\n", idAnimal, nome, especie, porte, dataNascimento));
+                        table.append(String.format("|%15d|%15s|%15s|%15tD|%15s|\n", idAnimal, nome, especie, dataNascimento, porte));
                 }
                 table.append("+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+\n");
                 table.append("Esolha dentre os animais acima:\n");

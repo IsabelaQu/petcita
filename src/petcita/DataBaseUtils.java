@@ -56,7 +56,6 @@ public class DataBaseUtils {
     {
         Statement cmd = conn.createStatement();
         cmd.executeUpdate(Sql);
-
         return true;
     }
     
@@ -65,6 +64,12 @@ public class DataBaseUtils {
         Statement cmd = conn.createStatement();
          
         return cmd.executeQuery(Sql);
+    }
+
+    public static boolean update(Connection conn, String Sql) throws SQLException {
+        Statement cmd = conn.createStatement();
+        cmd.executeUpdate(Sql);
+        return true;
     }
 
 }
