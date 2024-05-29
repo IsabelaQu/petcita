@@ -32,12 +32,12 @@ public class PETCITA {
                     System.out.println("");
                     System.out.println("---------------------PetCita----------------------");
                     System.out.println("--------------------------------------------------");
-                    System.out.println("----------Fa�a Login ou Crie seu usu�rio----------");
+                    System.out.println("----------Faça Login ou Crie seu usuário----------");
                     System.out.println("");
 
                     while(!respostaInicio.equalsIgnoreCase("L") && !respostaInicio.equalsIgnoreCase("N") && !respostaInicio.equalsIgnoreCase("S")){
 
-                        System.out.println("Deseja fazer Login, Criar um novo Usu�rio ou Sair? Login -> L, Novo Usu�rio -> N, Sair -> S");
+                        System.out.println("Deseja fazer Login, Criar um novo Usuário ou Sair? Login -> L, Novo Usuário -> N, Sair -> S");
                         System.out.print("Resposta: ");
                         respostaInicio = leitor.nextLine();
 
@@ -101,7 +101,7 @@ public class PETCITA {
                     
                     if(respostaInicio.equalsIgnoreCase("l"))
                     {
-                        
+                        respostaInicio = "";
                         Usuario user = new Usuario();
                         
                         System.out.println("Digite seu login: ");

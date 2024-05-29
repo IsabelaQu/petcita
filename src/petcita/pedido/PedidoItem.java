@@ -91,10 +91,7 @@ public class PedidoItem{
 
 	public String listarPedidoItens(Connection conn) throws SQLException {
 		StringBuilder table = new StringBuilder();
-		table.append("+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+\n");
-		table.append("|       ID       |     Nome       |   Descri�ao    |    Categoria   |    Valor Un.   |  quantidade    |  Dt. Validade  |   Fornecedor   |   Dt. Pedido   |\n");
-		table.append("+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+\n");
-
+		
 		String SQL = String.format(" SELECT "+ 
 						" pedido_item.id_pedido_item, "+ 
 						" catalogo.nome, "+ 
@@ -113,6 +110,13 @@ public class PedidoItem{
 						" WHERE pedido_item.id_usuario = %d", IdUsuario);
 
 		try (ResultSet rs = DataBaseUtils.select(conn, SQL)) {
+			if(!rs.next())
+				return ("Nenhum pedido encontrado.");
+
+			table.append("+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+\n");
+			table.append("|       ID       |     Nome       |   Descrição    |    Categoria   |    Valor Un.   |  quantidade    |  Dt. Validade  |   Fornecedor   |   Dt. Pedido   |\n");
+			table.append("+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+\n");
+
 			while (rs.next()) {
 				int idPedidoItem = rs.getInt("id_pedido_item");
 				int quantidade = rs.getInt("quantidade");
@@ -126,9 +130,10 @@ public class PedidoItem{
 
 				table.append(String.format("|%15d|%15s|%15s|%15s|%15.2f|%15d|%15tD|%15s|%15tD|\n", idPedidoItem, nome, descricao, categoria, valorUnidade, quantidade, dataValidade, fornecedor, dataPedido));
 			}
+
+			table.append("+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+\n");
 		}
 
-		table.append("+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+\n");
 		return table.toString();
 	}
 }

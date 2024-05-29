@@ -89,10 +89,7 @@ public class PedidoAgendamento {
 
 	public String listarPedidoAgendamentos(Connection conn) throws SQLException {
 		StringBuilder table = new StringBuilder();
-		table.append("+----------------+----------------+----------------+----------------+----------------+-------------------+----------------+----------------+------------------+------------------+\n");
-		table.append("|       ID       |     Nome       |   Descri��o    |    Categoria   |      Valor     |  Dt. Agendamento  |   Nome Animal  |     Esp�cie    |   Porte Animal   |   Servi�o Local? |\n");
-		table.append("+----------------+----------------+----------------+----------------+----------------+-------------------+----------------+----------------+------------------+------------------+\n");
-
+		
 		String SQL = String.format(" SELECT "+
 						 " pedido_agendamento.id_pedido_agendamento, "+ 
 						 " catalogo.nome, "+
@@ -115,23 +112,33 @@ public class PedidoAgendamento {
 					 " WHERE pedido_agendamento.id_usuario = %d", IdUsuario);
 
 		try (ResultSet rs =  DataBaseUtils.select(conn, SQL)) {
+			if(!rs.next())
+				return ("Nenhum pedido de agendamento encontrado");
+
+			table.append("+----------------+----------------+----------------+----------------+----------------+-------------------+----------------+----------------+------------------+------------------+------------------+\n");
+			table.append("|       ID       |     Nome       |   Descriçao    |    Categoria   |      Valor     |  Dt. Agendamento  |    Duração     |   Nome Animal  |     Especie      |   Porte Animal   |   Servico Local? |\n");
+			table.append("+----------------+----------------+----------------+----------------+----------------+-------------------+----------------+----------------+------------------+------------------+------------------+\n");
+
 			while (rs.next()) {
 				int idPedidoAgendamento = rs.getInt("id_pedido_agendamento");
 				String nome = rs.getString("nome");
 				String descricao = rs.getString("descricao");
 				String categoria = rs.getString("categoria");
 				double valorUnidade = rs.getDouble("valor");
-				int quantidade = rs.getInt("min_duracao");
+				int minDuracao = rs.getInt("min_duracao");
 				LocalDate dataAgendamento = rs.getDate("data_agendamento").toLocalDate();
 				boolean servicoInterno = rs.getBoolean("servico_interno");
 				String nomeAnimal = rs.getString("nome_animal");
 				String especieAnimal = rs.getString("especie");
 				String porteAnimal = rs.getString("porte");
 
-				table.append(String.format("|%15d|%15s|%15s|%15s|%15.2f|%15tD|%15s|%15s|%15b|\n", idPedidoAgendamento, nome, descricao, categoria, valorUnidade, dataAgendamento, nomeAnimal, especieAnimal, porteAnimal, servicoInterno));}
+				table.append(String.format("|%15d|%15s|%15s|%15s|%15.2f|%15tD|%15d|%15s|%15s|%15b|\n", idPedidoAgendamento, nome, descricao, categoria, valorUnidade, dataAgendamento, minDuracao, nomeAnimal, especieAnimal, porteAnimal, servicoInterno));
+			}
+
+			table.append("+----------------+----------------+----------------+----------------+----------------+-------------------+----------------+----------------+------------------+------------------+\n");
 		}
 
-		table.append("+----------------+----------------+----------------+----------------+----------------+-------------------+----------------+----------------+------------------+------------------+\n");
+		
 		return table.toString();
 	}
 	

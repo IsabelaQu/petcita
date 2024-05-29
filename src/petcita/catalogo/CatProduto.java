@@ -6,6 +6,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatter;
 
 public class CatProduto extends Catalogo{
     private int IdCatProduto;
@@ -44,9 +46,8 @@ public class CatProduto extends Catalogo{
             this.Fornecedor = fornecedor;
     }
 
-    public String getDtValidade() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        return sdf.format(this.DtValidade);
+    public LocalDate getDtValidade() {
+        return DtValidade;
     }
 
     public void setDtValidade(String dtValidade) throws Exception {
@@ -57,9 +58,8 @@ public class CatProduto extends Catalogo{
             this.DtValidade = dataConvertida;
     }
 
-    public String getDtRegistro() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        return sdf.format(this.DtRegistro);
+    public LocalDate getDtRegistro() {
+        return DtRegistro;
     }
 
     public void setDtRegistro(LocalDate dtRegistro) {
@@ -76,8 +76,8 @@ public class CatProduto extends Catalogo{
         super.criarCatalogo(conn);
 
         // Geração do insert para a tabela cat_servico
-        String SQL = String.format("INSERT INTO cat_produto (id_catalogo, fornecedor, dt_validade, dt_registro) VALUES (%d,%s,%tD,%f)", 
-                this.getIdCatalogo(), this.getFornecedor(), this.getDtValidade(), this.getDtRegistro());
+        String SQL = String.format("INSERT INTO cat_produto (id_catalogo, fornecedor, dt_validade, dt_registro) VALUES (%d,'%s','%s','%s')", 
+                this.getIdCatalogo(), this.getFornecedor(), this.getDtValidade().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), this.getDtRegistro().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 
         this.setIdCatProduto(DataBaseUtils.insertRetornaId(conn, SQL));
     }
@@ -116,20 +116,20 @@ public class CatProduto extends Catalogo{
 
     @Override
     public void alterarItemCatalogo(Connection conn) throws SQLException {
-        // Atualiza��oo do servi�o na tabela cat_servico
-        String SQL = String.format("UPDATE cat_produto SET fornecedor = %s, dt_validade = %tD, dt_registro = %tD WHERE id_cat_produto = %d",
+        // Atualização do serviço na tabela cat_servico
+        String SQL = String.format("UPDATE cat_produto SET fornecedor = '%s', dt_validade = '%s', dt_registro = '%s' WHERE id_cat_produto = %d",
                         this.getFornecedor(), this.getDtValidade(), this.getDtRegistro(), this.getIdCatProduto());
 
         DataBaseUtils.update(conn, SQL);
 
-        // Chamada ao m�todo de altera��o da classe super
+        // Chamada ao mátodo de alteração da classe super
         super.alterarItemCatalogo(conn);
     }
 
     public String exibirCatalogo(Connection conn) throws SQLException {
         StringBuilder table = new StringBuilder();
 
-        String sql = "SELECT catalogo.id_catalogo, catalogo.disponivel, catalogo.valor, catalogo.descricao, catalogo.categoria,"
+        String sql = "SELECT catalogo.id_catalogo, catalogo.disponivel, catalogo.valor, catalogo.nome, catalogo.descricao, catalogo.categoria,"
                         + "    cat_produto.id_cat_produto, cat_produto.fornecedor, cat_produto.dt_validade, cat_produto.dt_registro"
                         + " FROM catalogo "
                         + "     INNER JOIN cat_produto "
@@ -137,15 +137,16 @@ public class CatProduto extends Catalogo{
 
         ResultSet resposta = DataBaseUtils.select(conn, sql);
 
-        table.append("+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+------------------+------------------+\n");
-        table.append("|    ID-Produto   |    Descricao    |    Categoria    |      Valor      |    Disponivel   |    Fornecedor   | Data de validade | Data de Registro | \n");
-        table.append("+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+------------------+------------------+\n");
+        table.append("+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+------------------+------------------+\n");
+        table.append("|    ID-Produto   |    Nome         |    Descricao    |    Categoria    |      Valor      |    Disponivel   |    Fornecedor   | Data de validade | Data de Registro | \n");
+        table.append("+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+------------------+------------------+\n");
 
         while (resposta.next()) {
                 try {
                         this.setIdCatalogo(resposta.getInt("id_catalogo"));
                         this.setDisponivel(resposta.getBoolean("disponivel"));
                         this.setValor(resposta.getDouble("valor"));
+                        this.setNome(resposta.getString("nome"));
                         this.setDescricao(resposta.getString("descricao"));
                         this.setCategoria(resposta.getString("categoria"));
                         this.setIdCatProduto(resposta.getInt("id_cat_produto"));
@@ -153,28 +154,28 @@ public class CatProduto extends Catalogo{
                         this.setDtValidade(resposta.getString("dt_validade"));
                         this.setDtRegistro(resposta.getDate("dt_registro").toLocalDate());
 
-                        table.append(String.format("| %-15s | %-15s | %-15s | %-15s | %-15s | %-15s | %-15s | %-15s |\n",
-                                        this.getIdCatProduto(), this.getDescricao(), this.getCategoria(), this.getValor(),
+                        table.append(String.format("| %-15s | %-15s | %-15s | %-15s | %-15s | %-15s | %-15s | %-15s | %-15s |\n",
+                                        this.getIdCatProduto(), this.getNome(), this.getDescricao(), this.getCategoria(), this.getValor(),
                                         this.getDisponivel(), this.getFornecedor(), this.getDtValidade(), this.getDtRegistro()));
                 } catch (Exception ex) {
                         throw new SQLException("Não foi possível preencher o produto para exibição");
                 }
         }
 
-        table.append("+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+\n");
+        table.append("+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+\n");
 
         return table.toString();
     }
         public String exibirItemCatalogo() {
                 StringBuilder table = new StringBuilder();
 
-                table.append("+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+------------------+------------------+\n");
-                table.append("|    ID-Produto   |    Descricao    |    Categoria    |      Valor      |    Disponivel   |    Fornecedor   | Data de validade | Data de Registro | \n");
-                table.append("+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+------------------+------------------+\n");
-                table.append(String.format("| %-15s | %-15s | %-15s | %-15s | %-15s | %-15s | %-15s | %-15s |\n",
-                                this.getIdCatProduto(), this.getDescricao(), this.getCategoria(), this.getValor(),
+                table.append("+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+------------------+------------------+------------------+\n");
+                table.append("|    ID-Produto   |    Nome         |    Descricao    |    Categoria    |      Valor      |    Disponivel   |    Fornecedor    | Data de validade | Data de Registro | \n");
+                table.append("+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+------------------+------------------+------------------+\n");
+                table.append(String.format("| %-15s | %-15s | %-15s | %-15s | %-15s | %-15s | %-15s | %-15s | %-15s |\n",
+                                this.getIdCatProduto(), this.getNome(), this.getDescricao(), this.getCategoria(), this.getValor(),
                                 this.getDisponivel(), this.getFornecedor(), this.getDtValidade(), this.getDtRegistro()));
-                table.append("+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+\n");
+                table.append("+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+------------------+------------------+------------------+\n");
 
                 return table.toString();
         }

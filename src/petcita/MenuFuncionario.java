@@ -46,7 +46,7 @@ public class MenuFuncionario {
             System.out.println("");
             System.out.println("---------------------PetCita----------------------");
             System.out.println("---------------FUNÇÕES--ESPECIAIS-----------------");
-            System.out.println("1. Alterar Serviï¿½os"); 
+            System.out.println("1. Alterar Serviços"); 
             System.out.println("2. Alterar Produtos");
             System.out.println("3. Sair");
             System.out.print("Escolha uma opcao: ");
@@ -68,62 +68,82 @@ public class MenuFuncionario {
 
                         switch(opcaoIterno){
                             case "1":
-                                CatServico itemCatalogoServico = new CatServico();
-                                System.out.println("Cadastro de novos Serviï¿½os");                             
-                                System.out.println("Descrição:");
-                                itemCatalogoServico.setDescricao(leitor.nextLine());
-                                System.out.println("Tempo de duração em minutos:");
-                                itemCatalogoServico.setMinDuracao(leitor.nextInt());
-                                leitor.next();
-                                System.out.println("Categotia:");
-                                itemCatalogoServico.setCategoria(leitor.nextLine());
-                                System.out.println("Valor:");
-                                itemCatalogoServico.setValor(leitor.nextDouble());
-                                System.out.println("Serviço Interno:(true/false)");
-                                itemCatalogoServico.setServicoInterno(leitor.nextBoolean());
-                                itemCatalogoServico.setDisponivel(true);
+                                try
+                                {
+                                    CatServico itemCatalogoServico = new CatServico();
+                                    System.out.println("Cadastro de novos Serviços");
+                                    System.out.println("Nome:");
+                                    itemCatalogoServico.setNome(leitor.nextLine());
+                                    System.out.println("Descrição:");
+                                    itemCatalogoServico.setDescricao(leitor.nextLine());
+                                    System.out.println("Tempo de duração em minutos:");
+                                    itemCatalogoServico.setMinDuracao(leitor.nextInt());
+                                    leitor.nextLine();
+                                    System.out.println("Categotia:");
+                                    itemCatalogoServico.setCategoria(leitor.nextLine());
+                                    System.out.println("Valor:");
+                                    itemCatalogoServico.setValor(leitor.nextDouble());
+                                    System.out.println("Serviço Interno:(true/false)");
+                                    itemCatalogoServico.setServicoInterno(leitor.nextBoolean());
+                                    leitor.nextLine();
+                                    
+                                    itemCatalogoServico.setDisponivel(true);
 
-                                itemCatalogoServico.criarCatalogo(conn);
+                                    itemCatalogoServico.criarCatalogo(conn);
+                                    
+                                    System.out.println("-----------------------------");
 
-                                System.out.println("Serviço criado com sucesso!!!");
-
-                            break;
+                                    System.out.println("Serviço criado com sucesso!!!");
+                                
+                                }  
+                                catch(Exception ex)
+                                {
+                                    System.out.println("Problemas ao cadastrar o serviço! Causa: "+ ex.getMessage().toString());
+                                }
+                                
+                                opcaoIterno = null;
+                                break;
                             case "2":
                                 try
                                 {
-                                System.out.println(catalogoServico.exibirCatalogo(conn));
-                                System.out.println("");
-                                System.out.print("Digite o número do serviço que deseja alterar: ");
-                                int numeroServico = leitor.nextInt();
-                                leitor.nextLine(); 
+                                    System.out.println(catalogoServico.exibirCatalogo(conn));
+                                    System.out.println("");
+                                    System.out.print("Digite o número do serviço que deseja alterar: ");
+                                    int numeroServico = leitor.nextInt();
+                                    leitor.nextLine(); 
 
-                                CatServico itemCatServico = catalogoServico.buscarPorId(conn, numeroServico);
+                                    CatServico itemCatServico = catalogoServico.buscarPorId(conn, numeroServico);
 
-                                System.out.println(itemCatServico.exibirItemCatalogo());
-                                System.out.println("");
+                                    System.out.println(itemCatServico.exibirItemCatalogo());
+                                    System.out.println("");
 
-                                System.out.println("Descrição:");
-                                itemCatServico.setDescricao(leitor.nextLine());
-                                System.out.println("Tempo de duração em minutos:");
-                                itemCatServico.setMinDuracao(leitor.nextInt());
-                                leitor.next();
-                                System.out.println("Categotia:");
-                                itemCatServico.setCategoria(leitor.nextLine());
-                                System.out.println("Valor:");
-                                itemCatServico.setValor(leitor.nextDouble());
-                                System.out.println("Serviço Interno:(true/false)");
-                                itemCatServico.setServicoInterno(leitor.nextBoolean());
-                                itemCatServico.setDisponivel(true);
-                                
-                                itemCatServico.alterarItemCatalogo(conn);
+                                    System.out.println("Nome:");
+                                    itemCatServico.setNome(leitor.nextLine());
+                                    System.out.println("Descrição:");
+                                    itemCatServico.setDescricao(leitor.nextLine());
+                                    System.out.println("Tempo de duração em minutos:");
+                                    itemCatServico.setMinDuracao(leitor.nextInt());
+                                    leitor.nextLine();
+                                    System.out.println("Categotia:");
+                                    itemCatServico.setCategoria(leitor.nextLine());
+                                    System.out.println("Valor:");
+                                    itemCatServico.setValor(leitor.nextDouble());
+                                    leitor.nextLine();
+                                    System.out.println("Serviço Interno:(true/false)");
+                                    itemCatServico.setServicoInterno(leitor.nextBoolean());
+                                    leitor.nextLine();
+                                    itemCatServico.setDisponivel(true);
 
-                                System.out.println("Serviço alterado com sucesso!!!");
+                                    itemCatServico.alterarItemCatalogo(conn);
+
+                                    System.out.println("Serviço alterado com sucesso!!!");
 
                                 }
                                 catch(Exception ex)
                                 {
-                                    System.out.println("Problemas ao alterar o produto! StackTrace: "+ ex.getStackTrace().toString());
+                                    System.out.println("Problemas ao alterar o serviço! Causa: "+ ex.getMessage().toString());
                                 }
+                                opcaoIterno = null;
 
                                 break;
                             case "3":
@@ -140,15 +160,18 @@ public class MenuFuncionario {
                                     boolean ativo = acao.equalsIgnoreCase("ativar");
                                     catalogoServico.setIdCatalogo(itemCatServico.getIdCatalogo());
                                     catalogoServico.atualizarDisponibilidade(conn, ativo);
+                                    
+                                    System.out.println("Alteração de disponibilidade concluida!");
                                 }
                                 catch(Exception ex)
                                 {
-                                     System.out.println("Problemas ao alterar a disponibilidade do serviço! StackTrace: "+ ex.getStackTrace().toString());
+                                     System.out.println("Problemas ao alterar a disponibilidade do serviço! Causa: "+ ex.getMessage().toString());
                                 }
                                 break;
                             case "4":
                                 System.out.println("Saindo...");
                                 sairInterno = true;
+                                opcaoIterno = null;
                                 break;
                             default:
                                 System.out.println("Opção invalida! Tente novamente.");
@@ -157,6 +180,7 @@ public class MenuFuncionario {
                     } while (!sairInterno);
                     
                     sairInterno = false;
+                    opcao = "";
                     
                     break;
                     
@@ -168,33 +192,43 @@ public class MenuFuncionario {
                         System.out.println("-----------FUNÇÕES--ESPECIAIS--PRODUTO------------");
                         System.out.println("1. Adicionar Produto"); 
                         System.out.println("2. Editar Produto");
-                        System.out.println("3. Remover Produto");
+                        System.out.println("3. Ativar ou Desativar Produto");
                         System.out.println("4. Sair");
                         System.out.print("Escolha uma opcao: ");
                         opcaoIterno = leitor.nextLine();
 
                         switch(opcaoIterno){
                             case "1":
-                                CatProduto itemCatalogoProduto = new CatProduto();
-                                System.out.println("Cadastro de novos Produtos"); 
-                                System.out.println("Nome:");
-                                itemCatalogoProduto.setNome(leitor.nextLine());
-                                System.out.println("Descrição:");
-                                itemCatalogoProduto.setDescricao(leitor.nextLine());
-                                System.out.println("Fornecedor:");
-                                itemCatalogoProduto.setFornecedor(leitor.nextLine());
-                                System.out.println("Data de Validade:");
-                                itemCatalogoProduto.setDtValidade(leitor.nextLine());
-                                System.out.println("Categotia:");
-                                itemCatalogoProduto.setCategoria(leitor.nextLine());
-                                System.out.println("Valor:");
-                                itemCatalogoProduto.setValor(leitor.nextDouble());
-                                itemCatalogoProduto.setDisponivel(true);
-                                itemCatalogoProduto.setDtRegistro(ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()).toLocalDate());
+                                try
+                                {
+                                    CatProduto itemCatalogoProduto = new CatProduto();
+                                    System.out.println("Cadastro de novos Produtos"); 
+                                    System.out.println("Nome:");
+                                    itemCatalogoProduto.setNome(leitor.nextLine());
+                                    System.out.println("Descrição:");
+                                    itemCatalogoProduto.setDescricao(leitor.nextLine());
+                                    System.out.println("Fornecedor:");
+                                    itemCatalogoProduto.setFornecedor(leitor.nextLine());
+                                    System.out.println("Data de Validade:");
+                                    itemCatalogoProduto.setDtValidade(leitor.nextLine());
+                                    System.out.println("Categotia:");
+                                    itemCatalogoProduto.setCategoria(leitor.nextLine());
+                                    System.out.println("Valor:");
+                                    itemCatalogoProduto.setValor(leitor.nextDouble());
+                                    leitor.nextLine();
+                                    itemCatalogoProduto.setDisponivel(true);
+                                    
+                                    itemCatalogoProduto.setDtRegistro(ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()).toLocalDate());
 
-                                itemCatalogoProduto.criarCatalogo(conn);
+                                    itemCatalogoProduto.criarCatalogo(conn);
 
-                                System.out.println("Produto criado com sucesso!!!");
+                                    System.out.println("Produto criado com sucesso!!!");
+
+                                }  
+                                catch(Exception ex)
+                                {
+                                    System.out.println("Problemas ao cadastrar o serviço! Causa: "+ ex.getMessage().toString());
+                                }
 
                             break;
                             case "2":
@@ -223,6 +257,7 @@ public class MenuFuncionario {
                                     itemCatProduto.setCategoria(leitor.nextLine());
                                     System.out.println("Valor:");
                                     itemCatProduto.setValor(leitor.nextDouble());
+                                    leitor.nextLine();
                                     itemCatProduto.setDisponivel(true);
 
                                     itemCatProduto.alterarItemCatalogo(conn);
@@ -232,7 +267,7 @@ public class MenuFuncionario {
                                 }
                                 catch(Exception ex)
                                 {
-                                     System.out.println("Problemas ao alterar o produto! StackTrace: "+ ex.getStackTrace().toString());
+                                     System.out.println("Problemas ao alterar o produto! Causa: "+ ex.getMessage().toString());
                                     break;
                                 }
                                 break;
@@ -250,10 +285,12 @@ public class MenuFuncionario {
                                     boolean ativo = acao.equalsIgnoreCase("ativar");
                                     catalogoProduto.setIdCatalogo(itemCatProduto.getIdCatalogo());
                                     catalogoProduto.atualizarDisponibilidade(conn, ativo);
+                                    
+                                    System.out.println("Alteração de disponibilidade concluida!");
                                 }
                                 catch(Exception ex)
                                 {
-                                     System.out.println("Problemas ao alterar a disponibilidade do produto! StackTrace: "+ ex.getStackTrace().toString());
+                                     System.out.println("Problemas ao alterar a disponibilidade do produto! Causa: "+ ex.getMessage().toString());
                                     break;
                                 }
                                 break;
@@ -269,12 +306,14 @@ public class MenuFuncionario {
                     } while (!sairInterno);
                     
                     sairInterno = false;
+                    opcao = "";
                     
                     break;
                 case "3":
                     //3. Sair
                     System.out.println("Saindo...");
                     sair = true;
+                    opcao = "";
                     break;
                 default:
                     System.out.println("Opção invalida! Tente novamente.");

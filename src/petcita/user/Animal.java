@@ -13,20 +13,25 @@ public class Animal{
     private String Especie;
     private LocalDate DataNascimento;
     private char Porte;
-    private int IdCliente; // Referência ao id_cliente que é o dono do animal
+    private int IdUsuario; // Referência ao id_usuario que é o dono do animal
 
 // Método Construtor:
-    public Animal(int idAnimal, String nome, String especie, LocalDate dataNascimento, char porte, int idCliente) {
+    public Animal(int idAnimal, String nome, String especie, LocalDate dataNascimento, char porte, int idUsuario) {
         this.idAnimal = idAnimal;
         this.Nome = nome;
         this.Especie = especie;
         this.DataNascimento = dataNascimento;
         this.Porte = porte;
-        this.IdCliente = idCliente;
+        this.IdUsuario = idUsuario;
     }
     
     public Animal()
     {}
+
+    public Animal(int idUsuario)
+    {
+        this.IdUsuario = idUsuario;
+    }
 
 // Getters e Setters:
     public int getIdAnimal() {
@@ -75,26 +80,27 @@ public class Animal{
     }
 
     public void setPorte(char porte) throws Exception {
-        if (porte != 'P' && porte != 'M' && porte != 'G') {
+        porte = Character.toLowerCase(porte);
+        if (porte != 'p' && porte != 'm' && porte != 'g') {
             throw new Exception("O campo de porte do animal deve ser 'P', 'M' ou 'G'");
         }
         this.Porte = porte;
     }
 
-    public int getIdCliente() {
-        return IdCliente;
+    public int getIdUsuario() {
+        return IdUsuario;
     }
 
-    public void setIdCliente(int idCliente) throws Exception {
-        if (idCliente <= 0) {
-            throw new Exception("O ID do cliente deve ser um valor positivo");
+    public void setIdUsuario(int idUsuario) throws Exception {
+        if (idUsuario <= 0) {
+            throw new Exception("O ID do usuario deve ser um valor positivo");
         }
-        this.IdCliente = idCliente;
+        this.IdUsuario = idUsuario;
     }
     
     public void criarAnimal(Connection conn) throws SQLException
     {
-        String SQL = String.format("INSERT INTO animal (nome, especie, data_nascimento, porte, id_cliente) VALUES ('%s', '%s', '%s', '%c', %d)", this.getNome(), this.getEspecie(), this.getDataNascimento(), this.getPorte(), this.getIdCliente());
+        String SQL = String.format("INSERT INTO animal (nome, especie, data_nascimento, porte, id_usuario) VALUES ('%s', '%s', '%s', '%c', %d)", this.getNome(), this.getEspecie(), this.getDataNascimento(), this.getPorte(), this.getIdUsuario());
 
         this.setIdAnimal(DataBaseUtils.insertRetornaId(conn, SQL));
     }
@@ -109,17 +115,17 @@ public class Animal{
                 String especie = rs.getString("especie");
                 LocalDate dataNascimento = rs.getDate("data_nascimento").toLocalDate();
                 char porte = rs.getString("porte").charAt(0);
-                int idCliente = rs.getInt("id_cliente");
+                int idUsuario = rs.getInt("id_usuario");
 
-                return new Animal(id_animal, nome, especie, dataNascimento, porte, idCliente);
+                return new Animal(id_animal, nome, especie, dataNascimento, porte, idUsuario);
             } else {
-                return null; // Animal n�o encontrado
+                return null; // Animal não encontrado
             }
         }
     }
 
     public boolean atualizarAnimal(Connection conn) throws SQLException {
-        String SQL = "UPDATE animal SET nome = %s, especie = %s, data_nascimento = %s, porte = %c WHERE id_animal = %d";
+        String SQL = "UPDATE animal SET nome = '%s', especie = '%s', data_nascimento = '%s', porte = '%c' WHERE id_animal = %d";
         try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
             stmt.setString(1, this.getNome());
             stmt.setString(2, this.getEspecie());
@@ -151,40 +157,39 @@ public class Animal{
             String especie = retorno.getString("especie");
             LocalDate dataNascimento = retorno.getDate("data_nascimento").toLocalDate();
             char porte = retorno.getString("porte").charAt(0);
-            int cliente_id = retorno.getInt("cliente_id");
+            int usuario_id = retorno.getInt("usuario_id");
             
-            return new Animal(id, nome, especie, dataNascimento, porte, cliente_id);
+            return new Animal(id, nome, especie, dataNascimento, porte, usuario_id);
         } else {
             return null; // Animal não encontrado
         }
     } */
    
-   public String lerAnimalUsuario(Connection conn, int id_usuario) throws SQLException {
-        String SQL = String.format("SELECT id_animal, nome, especie, data_nascimento, porte FROM animal WHERE id_usuario = %d", id_usuario);
+   public String lerAnimalUsuario(Connection conn) throws SQLException {
+        String SQL = String.format("SELECT id_animal, nome, especie, data_nascimento, porte FROM animal WHERE id_usuario = %d", IdUsuario);
        
         StringBuilder table = new StringBuilder();
         
         
         try (ResultSet rs = DataBaseUtils.select(conn, SQL)) {
-            if(rs.next())
-            {
-                table.append("+----------------+----------------+----------------+-----------------+----------------+\n");
-                table.append("|       ID       |     Nome       |    Esp�cie     |  Dt. Nascimento |      Porte     |\n");
-                table.append("+----------------+----------------+----------------+-----------------+----------------+\n");
-                while (rs.next()) {
-                        int idAnimal = rs.getInt("id_animal");
-                        String nome = rs.getString("nome");
-                        String especie = rs.getString("especie");
-                        char porte = rs.getString("porte").charAt(0);
-                        LocalDate dataNascimento = rs.getDate("data_nascimento").toLocalDate();
+            if(!rs.next())
+                return "Nenhum animal encontrado para o usuário\n";
 
-                        table.append(String.format("|%15d|%15s|%15s|%15tD|%15s|\n", idAnimal, nome, especie, dataNascimento, porte));
-                }
-                table.append("+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+\n");
-                table.append("Esolha dentre os animais acima:\n");
+            table.append("+----------------+----------------+----------------+-----------------+----------------+\n");
+            table.append("|       ID       |     Nome       |    Espécie     |  Dt. Nascimento |      Porte     |\n");
+            table.append("+----------------+----------------+----------------+-----------------+----------------+\n");
+            while (rs.next()) {
+                    int idAnimal = rs.getInt("id_animal");
+                    String nome = rs.getString("nome");
+                    String especie = rs.getString("especie");
+                    String porte = rs.getString("porte");
+                    LocalDate dataNascimento = rs.getDate("data_nascimento").toLocalDate();
+
+                    table.append(String.format("|%15d|%15s|%15s|%15tD|%15s|\n", idAnimal, nome, especie, dataNascimento, porte));
             }
-            else
-                return "0";
+            table.append("+----------------+----------------+----------------+-----------------+----------------+\n");
+            table.append("Esolha dentre os animais acima:\n");
+            
         }
 
        
@@ -192,8 +197,8 @@ public class Animal{
     }
     
    //public void atualizarAnimal(Connection conn) throws SQLException {
-   //     String SQL = String.format("UPDATE animal SET nome = '%s', especie = '%s', data_nascimento = '%s', porte = '%c', cliente_id = %d WHERE id_animal = %d",
-   //                                 this.getNome(), this.getEspecie(), this.getDataNascimento(), this.getPorte(), this.getIdCliente(), this.getId_animal());
+   //     String SQL = String.format("UPDATE animal SET nome = '%s', especie = '%s', data_nascimento = '%s', porte = '%c', usuario_id = %d WHERE id_animal = %d",
+   //                                 this.getNome(), this.getEspecie(), this.getDataNascimento(), this.getPorte(), this.getIdUsuario(), this.getId_animal());
         
    //     Statement stmt = conn.createStatement();
    //     stmt.executeUpdate(SQL);

@@ -91,21 +91,20 @@ public class Catalogo {
 
     public void criarCatalogo(Connection conn) throws SQLException
     {		
-        String SQL = String.format("INSERT INTO catalogo (disponivel, valor, descricao, categoria) VALUES (%d,%s,%s,%s)", this.getDisponivel(), this.getValor(), this.getDescricao(), this.getCategoria());
+        String SQL = String.format("INSERT INTO catalogo (nome, disponivel, valor, descricao, categoria) VALUES ('%s',%b,'%s','%s','%s')", this.getNome(), this.getDisponivel(), this.getValor(), this.getDescricao(), this.getCategoria());
 
         this.setIdCatalogo(DataBaseUtils.insertRetornaId(conn, SQL));
     }
 
     public void alterarItemCatalogo(Connection conn) throws SQLException
     {
-        String SQL = String.format("UPDATE catalogo SET disponivel = %b, valor = %f, descricao = '%s', categoria = '%s' WHERE id_catalogo = %d", this.getDisponivel(), this.getValor(), this.getDescricao(), this.getCategoria(), this.getIdCatalogo());
-        
-        DataBaseUtils.insertRetornaId(conn, SQL);
+        String SQL = String.format("UPDATE catalogo SET nome = '%s', disponivel = %b, valor = '%s', descricao = '%s', categoria = '%s' WHERE id_catalogo = %d", this.getNome(), this.getDisponivel(), this.getValor(), this.getDescricao(), this.getCategoria(), this.getIdCatalogo());
+        DataBaseUtils.update(conn, SQL);
     }
 
     public void atualizarDisponibilidade(Connection conn, boolean disponivel) throws SQLException {
         String SQL = String.format("UPDATE catalogo SET disponivel = %b WHERE id_catalogo = %d", disponivel, this.getIdCatalogo());
-        DataBaseUtils.insertRetornaId(conn, SQL);
+        DataBaseUtils.update(conn, SQL);
     }
     
 }

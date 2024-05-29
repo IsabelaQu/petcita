@@ -71,18 +71,18 @@ public class CatServico extends Catalogo {
 
     @Override
     public void alterarItemCatalogo(Connection conn) throws SQLException {
-        // Atualiza��oo do servi�o na tabela cat_servico
+        // Atualização do serviço na tabela cat_servico
         String SQL = String.format("UPDATE cat_servico SET min_duracao = %d, servico_interno = %b WHERE id_cat_servico = %d",
                 this.getMinDuracao(), this.getServicoInterno(), this.getIdCatServico());
 
         DataBaseUtils.update(conn, SQL);
 
-        // Chamada ao m�todo de altera��o da classe super
+        // Chamada ao método de alteração da classe super
         super.alterarItemCatalogo(conn);
     }
 
     public CatServico buscarPorId(Connection conn, int id) throws SQLException {
-        String SQL = String.format("SELECT catalogo.id_catalogo, catalogo.disponivel, catalogo.valor, catalogo.descricao, catalogo.categoria,"
+        String SQL = String.format("SELECT catalogo.id_catalogo, catalogo.nome, catalogo.disponivel, catalogo.valor, catalogo.descricao, catalogo.categoria,"
                 + "    cat_servico.id_cat_servico, cat_servico.min_duracao, cat_servico.servico_interno"
                 + " FROM catalogo "
                 + "     INNER JOIN cat_servico "
@@ -94,6 +94,8 @@ public class CatServico extends Catalogo {
         if (resposta.next()) {
             try {
                     CatServico catServico = new CatServico();
+                    
+                    catServico.setNome(resposta.getString("nome"));
                     catServico.setIdCatalogo(resposta.getInt("id_catalogo"));
                     catServico.setDisponivel(resposta.getBoolean("disponivel"));
                     catServico.setValor(resposta.getDouble("valor"));

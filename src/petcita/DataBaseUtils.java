@@ -40,15 +40,15 @@ public class DataBaseUtils {
             // Busca os ids gerados
             ResultSet resposta = cmd.getGeneratedKeys();
 
-            // Move para o pr�ximo, nesse caso primeiro item do ResultSet
+            // Move para o próximo, nesse caso primeiro item do ResultSet
             if (resposta.next()) {
                 // Retorna o Id gerado pelo Insert
                 return resposta.getInt(1);
             } else {
-                throw new SQLException("Nenhum ID de usu�rio encontrado.");
+                throw new SQLException("Nenhum ID de usuário encontrado.");
             }
         } else {
-            throw new SQLException("Nenhum usu�rio foi gerado.");
+            throw new SQLException("Nenhum usuário foi gerado.");
         }
     }
     
