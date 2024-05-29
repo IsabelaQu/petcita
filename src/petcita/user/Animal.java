@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.sql.ResultSet;
 import petcita.DataBaseUtils;
 import java.sql.Connection;
-import java.time.LocalDate;
+import java.sql.PreparedStatement;
 
 public class Animal{
     private int idAnimal;
@@ -99,7 +99,49 @@ public class Animal{
         this.setIdAnimal(DataBaseUtils.insertRetornaId(conn, SQL));
     }
     
-   public Animal lerAnimal(Connection conn, int id_animal) throws SQLException {
+    public Animal buscarAnimalPorId(Connection conn, int id_animal) throws SQLException {
+        String SQL = "SELECT * FROM animal WHERE id_animal = %d";
+        try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
+            stmt.setInt(1, id_animal);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                String nome = rs.getString("nome");
+                String especie = rs.getString("especie");
+                LocalDate dataNascimento = rs.getDate("data_nascimento").toLocalDate();
+                char porte = rs.getString("porte").charAt(0);
+                int idCliente = rs.getInt("id_cliente");
+
+                return new Animal(id_animal, nome, especie, dataNascimento, porte, idCliente);
+            } else {
+                return null; // Animal n�o encontrado
+            }
+        }
+    }
+
+    public boolean atualizarAnimal(Connection conn) throws SQLException {
+        String SQL = "UPDATE animal SET nome = %s, especie = %s, data_nascimento = %s, porte = %c WHERE id_animal = %d";
+        try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
+            stmt.setString(1, this.getNome());
+            stmt.setString(2, this.getEspecie());
+            stmt.setDate(3, java.sql.Date.valueOf(this.getDataNascimento()));
+            stmt.setString(4, String.valueOf(this.getPorte()));
+            stmt.setInt(5, this.getIdAnimal());
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        }
+    }
+
+    public boolean deletarAnimal(Connection conn, int id_animal) throws SQLException {
+        String SQL = "DELETE FROM animal WHERE id_animal = %d";
+        try (PreparedStatement stmt = conn.prepareStatement(SQL)) {
+            stmt.setInt(1, id_animal);
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        }
+    }
+    
+   /*public Animal lerAnimal(Connection conn, int id_animal) throws SQLException {
        String SQL = String.format("SELECT id_animal, nome, especie, data_nascimento, porte FROM animal WHERE id_animal = %d", id_animal);
        ResultSet retorno = DataBaseUtils.select(conn, SQL);
        
@@ -115,7 +157,7 @@ public class Animal{
         } else {
             return null; // Animal não encontrado
         }
-    }
+    } */
    
    public String lerAnimalUsuario(Connection conn, int id_usuario) throws SQLException {
         String SQL = String.format("SELECT id_animal, nome, especie, data_nascimento, porte FROM animal WHERE id_usuario = %d", id_usuario);
