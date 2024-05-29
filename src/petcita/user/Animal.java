@@ -2,11 +2,10 @@ package petcita.user;
 
 import java.time.LocalDate;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.ResultSet;
 import petcita.DataBaseUtils;
 import java.sql.Connection;
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Animal{
     private int idAnimal;
@@ -135,7 +134,7 @@ public class Animal{
                         String nome = rs.getString("nome");
                         String especie = rs.getString("especie");
                         char porte = rs.getString("porte").charAt(0);
-                        Date dataNascimento = rs.getDate("data_nascimento");
+                        LocalDate dataNascimento = rs.getDate("data_nascimento").toLocalDate();
 
                         table.append(String.format("|%15d|%15s|%15s|%15tD|%15s|\n", idAnimal, nome, especie, dataNascimento, porte));
                 }

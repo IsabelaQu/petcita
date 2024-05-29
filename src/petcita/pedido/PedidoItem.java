@@ -3,7 +3,8 @@ package petcita.pedido;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import petcita.DataBaseUtils;
 
 public class PedidoItem{
@@ -11,9 +12,9 @@ public class PedidoItem{
 	private int	IdPedidoItem;
 	private int 	IdCatProduto;
 	private int	Quantidade;
-	private Date	DataPedido;
+	private LocalDate	DataPedido;
 	
-	public PedidoItem(int idUsuario, boolean finalizado, int idPedidoItem, int idCatProduto, int quantidade, Date dataPedido) {
+	public PedidoItem(int idUsuario, boolean finalizado, int idPedidoItem, int idCatProduto, int quantidade, LocalDate dataPedido) {
 		IdUsuario = idUsuario;
                 IdPedidoItem = idPedidoItem;
 		IdCatProduto = idCatProduto;
@@ -59,11 +60,12 @@ public class PedidoItem{
 		throw new Exception("Quantidade nÃ£o pode ser vazia.");
 	}
 	
-	public Date getDataPedido() {
-		return DataPedido;
+	public String getDataPedido() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		return sdf.format(this.DataPedido);
 	}
 
-	public void setDataPedido(Date dataPedido) {
+	public void setDataPedido(LocalDate dataPedido) {
 		DataPedido = dataPedido;
 	}
 
@@ -90,10 +92,10 @@ public class PedidoItem{
 	public String listarPedidoItens(Connection conn) throws SQLException {
 		StringBuilder table = new StringBuilder();
 		table.append("+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+\n");
-		table.append("|       ID       |     Nome       |   Descriçao    |    Categoria   |    Valor Un.   |  quantidade    |  Dt. Validade  |   Fornecedor   |   Dt. Pedido   |\n");
+		table.append("|       ID       |     Nome       |   Descriï¿½ao    |    Categoria   |    Valor Un.   |  quantidade    |  Dt. Validade  |   Fornecedor   |   Dt. Pedido   |\n");
 		table.append("+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+----------------+\n");
 
-		String SQL = " SELECT "+ 
+		String SQL = String.format(" SELECT "+ 
 						" pedido_item.id_pedido_item, "+ 
 						" catalogo.nome, "+ 
 						" catalogo.descricao, "+ 
@@ -108,18 +110,18 @@ public class PedidoItem{
 							" ON pedido_item.id_cat_produto = cat_produto.id_cat_produto "+ 
 						" INNER JOIN catalogo "+  
 							" ON cat_produto.id_catalogo = catalogo.id_catalogo"+
-						" WHERE pedido_item.id_usuario = 1; ";
+						" WHERE pedido_item.id_usuario = %d", IdUsuario);
 
 		try (ResultSet rs = DataBaseUtils.select(conn, SQL)) {
 			while (rs.next()) {
 				int idPedidoItem = rs.getInt("id_pedido_item");
 				int quantidade = rs.getInt("quantidade");
-				Date dataPedido = rs.getDate("data_pedido");
+				LocalDate dataPedido = rs.getDate("data_pedido").toLocalDate(); 
 				String nome = rs.getString("nome");
 				String descricao = rs.getString("descricao");
 				String categoria = rs.getString("categoria");
 				double valorUnidade = rs.getDouble("valor");
-				Date dataValidade = rs.getDate("dt_validade");
+				LocalDate dataValidade = rs.getDate("dt_validade").toLocalDate(); 
 				String fornecedor = rs.getString("fornecedor");
 
 				table.append(String.format("|%15d|%15s|%15s|%15s|%15.2f|%15d|%15tD|%15s|%15tD|\n", idPedidoItem, nome, descricao, categoria, valorUnidade, quantidade, dataValidade, fornecedor, dataPedido));

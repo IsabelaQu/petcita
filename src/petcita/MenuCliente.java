@@ -7,7 +7,11 @@ package petcita;
 import java.util.Scanner;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
 import petcita.catalogo.CatProduto;
 import petcita.catalogo.CatServico;
 import petcita.pedido.PedidoAgendamento;
@@ -42,6 +46,10 @@ public class MenuCliente {
         boolean sair = false;
         PedidoItem carrinhoItem = new PedidoItem();
         PedidoAgendamento carrinhoAgendamento = new PedidoAgendamento();
+        
+        carrinhoItem.setIdUsuario(Cliente.getIdUsuario());
+        carrinhoAgendamento.setIdUsuario(Cliente.getIdUsuario());
+        
         int idCatServico = 0, idAnimalEscolhido = 0, idCatProduto = 0, quantidadeEscolhida = 0, idPedidoAgendamento = 0, idPedidoItem = 0;
 
         do {
@@ -64,15 +72,15 @@ public class MenuCliente {
                     System.out.println(catalogoServicos.exibirCatalogo(conn));
                     
                     System.out.println("");
-                    System.out.println("Escolha um dos serviços acima para adicionar ao seu Carrinho!");
-                    System.out.print("Digite o numero(ID) do serviço desejado:");
+                    System.out.println("Escolha um dos serviï¿½os acima para adicionar ao seu Carrinho!");
+                    System.out.print("Digite o numero(ID) do serviï¿½o desejado:");
                     try
                     {
                         idCatServico = Integer.parseInt(leitor.nextLine());
                     }
                     catch(Exception ex)
                     {
-                       System.out.println("Digite um número(ID) presente na lista acima!");
+                       System.out.println("Digite um nï¿½mero(ID) presente na lista acima!");
                        break;
                     }
                     
@@ -82,7 +90,7 @@ public class MenuCliente {
                     
                     if(animaisExibir.equals("0"))
                     {
-                        System.out.println("Nenhum encontrado para realização do Serviço.");
+                        System.out.println("Nenhum encontrado para realizaï¿½ï¿½o do Serviï¿½o.");
                         break;
                     }
                     
@@ -94,18 +102,18 @@ public class MenuCliente {
                     }
                     catch(Exception ex)
                     {
-                       System.out.println("Digite um número(ID) presente na lista acima!");
+                       System.out.println("Digite um nï¿½mero(ID) presente na lista acima!");
                        break;
                     }
                                    
                     carrinhoAgendamento.setIdUsuario(this.Cliente.getIdUsuario());
-                    carrinhoAgendamento.setDataAgendamento(new Date());
+                    carrinhoAgendamento.setDataAgendamento(ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()).toLocalDate());
                     carrinhoAgendamento.setIdCatServico(idCatServico);
                     carrinhoAgendamento.setIdAnimal(idAnimalEscolhido);
                     
                     carrinhoAgendamento.criarPedidoAgendamento(conn);
                     
-                    System.out.println("Serviço adicionado ao Carrinho com sucesso!!");
+                    System.out.println("Serviï¿½o adicionado ao Carrinho com sucesso!!");
                     
                     break;
                 case "2":
@@ -122,7 +130,7 @@ public class MenuCliente {
                     }
                     catch(Exception ex)
                     {
-                       System.out.println("Digite um número(ID) presente na lista acima!");
+                       System.out.println("Digite um nï¿½mero(ID) presente na lista acima!");
                        break;
                     }
                     System.out.println("");
@@ -134,12 +142,12 @@ public class MenuCliente {
                     }
                     catch(Exception ex)
                     {
-                        System.out.println("Digite um número(ID) presente na lista acima!");
+                        System.out.println("Digite um nï¿½mero(ID) presente na lista acima!");
                         break;
                     }
                     
                     carrinhoItem.setIdUsuario(this.Cliente.getIdUsuario());
-                    carrinhoItem.setDataPedido(new Date());
+                    carrinhoItem.setDataPedido(ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()).toLocalDate());
                     carrinhoItem.setIdCatProduto(idCatProduto);
                     carrinhoItem.setQuantidade(quantidadeEscolhida);
                     
@@ -150,19 +158,19 @@ public class MenuCliente {
                     break;
                 case "3":
                     //3. Ver carrinho
-                    carrinhoItem.listarPedidoItens(conn);
+                    System.out.println(carrinhoItem.listarPedidoItens(conn));
                     
                     System.out.println("");
                     
-                    carrinhoAgendamento.listarPedidoAgendamentos(conn);
+                    System.out.println(carrinhoAgendamento.listarPedidoAgendamentos(conn));
                     
                     break;
                 case "4":
                     //4. Remover produtos do carrinho
-                    carrinhoItem.listarPedidoItens(conn);
+                    System.out.println(carrinhoItem.listarPedidoItens(conn));
                     
                     System.out.println("");
-                    System.out.println("Qual produto você gostaria de remover do carrinho?");
+                    System.out.println("Qual produto vocï¿½ gostaria de remover do carrinho?");
                     
                     try
                     {
@@ -170,7 +178,7 @@ public class MenuCliente {
                     }
                     catch(Exception ex)
                     {
-                        System.out.println("Digite um número(ID) presente na lista acima!");
+                        System.out.println("Digite um nï¿½mero(ID) presente na lista acima!");
                         break;
                     }
                     
@@ -182,9 +190,9 @@ public class MenuCliente {
                     break;
                 case "5":
                     //5. Cancelar agendamentos no carrinho
-                    carrinhoAgendamento.listarPedidoAgendamentos(conn);
+                    System.out.println(carrinhoAgendamento.listarPedidoAgendamentos(conn));
                     System.out.println("");
-                    System.out.println("Qual agendamento você gostaria de cancelar?");
+                    System.out.println("Qual agendamento vocï¿½ gostaria de cancelar?");
                     
                     try
                     {
@@ -192,7 +200,7 @@ public class MenuCliente {
                     }
                     catch(Exception ex)
                     {
-                        System.out.println("Digite um número(ID) presente na lista acima!");
+                        System.out.println("Digite um nï¿½mero(ID) presente na lista acima!");
                         break;
                     }
                     
@@ -208,7 +216,7 @@ public class MenuCliente {
                     sair = true;
                     break;
                 default:
-                    System.out.println("Opção invalida! Tente novamente.");
+                    System.out.println("Opï¿½ï¿½o invalida! Tente novamente.");
             }
         } while (!sair);
     }

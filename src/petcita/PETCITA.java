@@ -5,14 +5,8 @@
 package petcita;
 
 import java.sql.Connection;
-import java.time.Instant;
-import java.time.ZoneOffset;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.Scanner;
-import petcita.catalogo.CatServico;
-import petcita.pedido.PedidoAgendamento;
-import petcita.pedido.PedidoItem;
 import petcita.user.Usuario;
 
 /**
@@ -38,12 +32,12 @@ public class PETCITA {
                     System.out.println("");
                     System.out.println("---------------------PetCita----------------------");
                     System.out.println("--------------------------------------------------");
-                    System.out.println("----------Faça Login ou Crie seu usuário----------");
+                    System.out.println("----------Faï¿½a Login ou Crie seu usuï¿½rio----------");
                     System.out.println("");
 
                     while(!respostaInicio.equalsIgnoreCase("L") && !respostaInicio.equalsIgnoreCase("N") && !respostaInicio.equalsIgnoreCase("S")){
 
-                        System.out.println("Deseja fazer Login, Criar um novo Usuário ou Sair? Login -> L, Novo Usuário -> N, Sair -> S");
+                        System.out.println("Deseja fazer Login, Criar um novo Usuï¿½rio ou Sair? Login -> L, Novo Usuï¿½rio -> N, Sair -> S");
                         System.out.print("Resposta: ");
                         respostaInicio = leitor.nextLine();
 
@@ -107,55 +101,32 @@ public class PETCITA {
                     
                     if(respostaInicio.equalsIgnoreCase("l"))
                     {
-                        String respostaLogin = "";
                         
-                        while(!respostaLogin.equalsIgnoreCase("c") && !respostaLogin.equalsIgnoreCase("f")){
-
-                            System.out.println("Deseja fazer Login como Cliente ou Funcionário? Cliente -> C ou Funcionário -> F");
-                            System.out.print("Resposta: ");
-                            respostaLogin = leitor.nextLine();
-
-                        }
+                        Usuario user = new Usuario();
                         
-                        if(respostaLogin.equalsIgnoreCase("c"))
+                        System.out.println("Digite seu login: ");
+                        user.setLogin(leitor.nextLine());
+                        
+                        System.out.println("Digite sua senha: ");
+                        user.setSenha(leitor.nextLine());
+                        
+                        if(user.validaLogin(conn))
                         {
-                            Usuario userCliente = new Usuario();
-                            
-                            System.out.println("Digite seu login: ");
-                            userCliente.setLogin(leitor.nextLine());
-                            
-                            System.out.println("Digite sua senha: ");
-                            userCliente.setSenha(leitor.nextLine());
-                            
-                            if(userCliente.validaLogin(conn))
+                            System.out.println("Bem vindo ao PetCita!");
+                            System.out.println(String.format("O que deseja fazer hoje %s?", user.getNome()));
+                            if(user.getFuncionario())
                             {
-                                MenuCliente menuCliente = new MenuCliente(userCliente);
-                                
+                                MenuFuncionario menuFuncionario = new MenuFuncionario(user);
+                                menuFuncionario.funcionarioMainMenu(conn);
+                            }
+                            else
+                            {
+                                MenuCliente menuCliente = new MenuCliente(user);
                                 menuCliente.clienteMainMenu(conn);
                             }
+
                         }
-                        
-                        if(respostaLogin.equalsIgnoreCase("f"))
-                        {
-                            Usuario userFuncionario = new Usuario();
-                            
-                            System.out.println("Digite seu login: ");
-                            userFuncionario.setLogin(leitor.nextLine());
-                            
-                            System.out.println("Digite sua senha: ");
-                            userFuncionario.setSenha(leitor.nextLine());
-                            
-                            if(userFuncionario.validaLogin(conn))
-                                System.out.println("Login Concluido!");
-                                break;
-                                // Continuar Main de funcionario aqui
-                                    // Idem do cliente
-                                    // Cadastrar Produto
-                                    // Cadastrar Serviço
-                                    // Cadastrar Animal
-                                        // mostrar lista de clientes, pedir o id e dps demais infos.
-                        }
-                        
+                          
                     }
             }
             catch(Exception ex)

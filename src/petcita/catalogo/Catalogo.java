@@ -1,15 +1,9 @@
 
 package petcita.catalogo;
-//base de catalogo feita, podemos pensar em algo para polimorfismo 
 
-import java.time.LocalDate;
 import java.sql.SQLException;
-import java.sql.Statement;
 import petcita.DataBaseUtils;
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Catalogo {
     private int  IdCatalogo;
@@ -31,8 +25,6 @@ public class Catalogo {
         this.Categoria = categoria;
     }
     
-    //TODO: ADICIONAR EXCEPTIONS DE PREENCHIMENTO + COLOCAR TRY CATCH NO METODO DE EXIBIR
-
     public int getIdCatalogo() {
         return IdCatalogo;
     }
@@ -54,6 +46,10 @@ public class Catalogo {
     }
 
     public void setValor(Double valor) {
+        if(valor < 0)
+        {
+            throw new IllegalArgumentException("O valor não pode ser negativo");
+        }
         this.Valor = valor;
     }
     
@@ -62,6 +58,10 @@ public class Catalogo {
     }
 
     public void setNome(String nome) {
+        if(nome.equals("") || nome.isEmpty())
+        {
+            throw new IllegalArgumentException("O nome não pode ser vazio");
+        }
         this.Nome = nome;
     }
 
@@ -70,6 +70,10 @@ public class Catalogo {
     }
 
     public void setDescricao(String descricao) {
+        if(descricao.equals("") || descricao.isEmpty())
+        {
+            throw new IllegalArgumentException("A descrição não pode ser vazia");
+        }
         this.Descricao = descricao;
     }
 
@@ -78,6 +82,10 @@ public class Catalogo {
     }
 
     public void setCategoria(String categoria) {
+        if(categoria.equals("") || categoria.isEmpty())
+        {
+            throw new IllegalArgumentException("A categoria não pode ser vazia");
+        }
         this.Categoria = categoria;
     }
 

@@ -5,20 +5,18 @@ import petcita.DataBaseUtils;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDate;
 
 public class CatProduto extends Catalogo{
     private int IdCatProduto;
     private String Fornecedor;
-    private Date DtValidade;
-    private Date DtRegistro;
+    private LocalDate DtValidade;
+    private LocalDate DtRegistro;
     
     public CatProduto()
     {}
 
-    public CatProduto(String nome, Boolean disponivel, Double valor, String descricao, String categoria, int idCatProduto, String fornecedor, Date dtValidade, Date dtRegistro) {
+    public CatProduto(String nome, Boolean disponivel, Double valor, String descricao, String categoria, int idCatProduto, String fornecedor, LocalDate dtValidade, LocalDate dtRegistro) {
             super(nome, disponivel, valor, descricao, categoria);
             this.IdCatProduto = idCatProduto;
             this.Fornecedor = fornecedor;
@@ -39,33 +37,34 @@ public class CatProduto extends Catalogo{
             return Fornecedor;
     }
 
-    public void setFornecedor(String fornecedor) throws Exception {
+    public void setFornecedor(String fornecedor) {
             if(fornecedor.equals("") || fornecedor.isEmpty()) {
-                    throw new Exception("O campo fornecedor não pode ser vazio");
+                    throw new IllegalArgumentException("O campo fornecedor não pode ser vazio");
             }
             this.Fornecedor = fornecedor;
     }
 
-    public Date getDtValidade() {
-            return DtValidade;
+    public String getDtValidade() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(this.DtValidade);
     }
 
     public void setDtValidade(String dtValidade) throws Exception {
             if(dtValidade == null) {
-                    throw new Exception("O campo de data de validade não pode ser vazio");
+                    throw new IllegalArgumentException("O campo de data de validade não pode ser vazio");
             }
-            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-            Date dataConvertida = formatter.parse(dtValidade);
+            LocalDate dataConvertida = LocalDate.parse(dtValidade);
             this.DtValidade = dataConvertida;
     }
 
-    public Date getDtRegistro() {
-            return DtRegistro;
+    public String getDtRegistro() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(this.DtRegistro);
     }
 
-    public void setDtRegistro(Date dtRegistro) throws Exception {
+    public void setDtRegistro(LocalDate dtRegistro) {
             if(dtRegistro == null) {
-                    throw new Exception("O campo de data de registro não pode ser vazio");
+                    throw new IllegalArgumentException("O campo de data de registro não pode ser vazio");
             }
             this.DtRegistro = dtRegistro;
     }
@@ -105,7 +104,7 @@ public class CatProduto extends Catalogo{
                         produto.setIdCatProduto(resposta.getInt("id_cat_produto"));
                         produto.setFornecedor(resposta.getString("fornecedor"));
                         produto.setDtValidade(resposta.getString("dt_validade"));
-                        produto.setDtRegistro(resposta.getDate("dt_registro"));
+                        produto.setDtRegistro(resposta.getDate("dt_registro").toLocalDate());
                         return produto;
                 } catch (Exception ex) {
                         throw new SQLException("Não foi possível preencher o produto");
@@ -152,7 +151,7 @@ public class CatProduto extends Catalogo{
                         this.setIdCatProduto(resposta.getInt("id_cat_produto"));
                         this.setFornecedor(resposta.getString("fornecedor"));
                         this.setDtValidade(resposta.getString("dt_validade"));
-                        this.setDtRegistro(resposta.getDate("dt_registro"));
+                        this.setDtRegistro(resposta.getDate("dt_registro").toLocalDate());
 
                         table.append(String.format("| %-15s | %-15s | %-15s | %-15s | %-15s | %-15s | %-15s | %-15s |\n",
                                         this.getIdCatProduto(), this.getDescricao(), this.getCategoria(), this.getValor(),

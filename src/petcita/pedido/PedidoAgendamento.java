@@ -4,17 +4,18 @@ package petcita.pedido;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
+import java.time.LocalDate;
 import petcita.DataBaseUtils;
+import java.time.format.DateTimeFormatter;
 
 public class PedidoAgendamento {
 	private int     IdUsuario;
 	private int 	IdPedidoAgendamento;
 	private int 	IdCatServico;
 	private int 	IdAnimal;
-	private Date 	DataAgendamento;
+	private LocalDate 	DataAgendamento;
 
-	public PedidoAgendamento(int idUsuario, int idCatServico, int idAnimal, Date dataAgendamento) {
+	public PedidoAgendamento(int idUsuario, int idCatServico, int idAnimal, LocalDate dataAgendamento) {
 		IdCatServico = idCatServico;
 		IdAnimal = idAnimal;
                 DataAgendamento = dataAgendamento;
@@ -55,19 +56,20 @@ public class PedidoAgendamento {
 	public void setIdAnimal(int idAnimal) {
 		IdAnimal = idAnimal;
 	}
-
-	public Date getDataAgendamento() {
-		return DataAgendamento;
+	
+	public String getDataAgendamento() {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		return DataAgendamento.format(formatter);
 	}
 
-	public void setDataAgendamento(Date dataAgendamento) {
+	public void setDataAgendamento(LocalDate dataAgendamento) {
 		DataAgendamento = dataAgendamento;
 	}
 
 	public void criarPedidoAgendamento(Connection conn) throws SQLException
 	{            
 	    String SQL = String.format("INSERT INTO pedido_agendamento (id_usuario, id_cat_servico, id_animal, data_agendamento) "
-	    		+ "VALUES ( %d, %d, %d,%tD)" , this.getIdUsuario(), this.getIdCatServico(), this.getIdAnimal(), this.getDataAgendamento());
+	    		+ "VALUES ( %d, %d, %d,'%s')" , this.getIdUsuario(), this.getIdCatServico(), this.getIdAnimal(), LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 	    
 	    this.setIdPedidoAgendamento(DataBaseUtils.insertRetornaId(conn, SQL));
 
@@ -88,10 +90,10 @@ public class PedidoAgendamento {
 	public String listarPedidoAgendamentos(Connection conn) throws SQLException {
 		StringBuilder table = new StringBuilder();
 		table.append("+----------------+----------------+----------------+----------------+----------------+-------------------+----------------+----------------+------------------+------------------+\n");
-		table.append("|       ID       |     Nome       |   Descrição    |    Categoria   |      Valor     |  Dt. Agendamento  |   Nome Animal  |     Espécie    |   Porte Animal   |   Serviço Local? |\n");
+		table.append("|       ID       |     Nome       |   Descriï¿½ï¿½o    |    Categoria   |      Valor     |  Dt. Agendamento  |   Nome Animal  |     Espï¿½cie    |   Porte Animal   |   Serviï¿½o Local? |\n");
 		table.append("+----------------+----------------+----------------+----------------+----------------+-------------------+----------------+----------------+------------------+------------------+\n");
 
-		String SQL = " SELECT "+
+		String SQL = String.format(" SELECT "+
 						 " pedido_agendamento.id_pedido_agendamento, "+ 
 						 " catalogo.nome, "+
 						 " catalogo.descricao, "+ 
@@ -109,8 +111,8 @@ public class PedidoAgendamento {
 						" INNER JOIN catalogo "+
 							" ON cat_servico.id_catalogo = catalogo.id_catalogo "+
 						" INNER JOIN animal "+
-							" ON pedido_agendamento.id_usuario = animal.id_usuario "+
-					 " WHERE pedido_agendamento.id_usuario = 1; ";
+							" ON pedido_agendamento.id_animal = animal.id_animal "+
+					 " WHERE pedido_agendamento.id_usuario = %d", IdUsuario);
 
 		try (ResultSet rs =  DataBaseUtils.select(conn, SQL)) {
 			while (rs.next()) {
@@ -120,7 +122,7 @@ public class PedidoAgendamento {
 				String categoria = rs.getString("categoria");
 				double valorUnidade = rs.getDouble("valor");
 				int quantidade = rs.getInt("min_duracao");
-				Date dataAgendamento = rs.getDate("data_agendamento");
+				LocalDate dataAgendamento = rs.getDate("data_agendamento").toLocalDate();
 				boolean servicoInterno = rs.getBoolean("servico_interno");
 				String nomeAnimal = rs.getString("nome_animal");
 				String especieAnimal = rs.getString("especie");

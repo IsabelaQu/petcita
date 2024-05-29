@@ -149,12 +149,13 @@ public class Usuario {
         ResultSet resposta = DataBaseUtils.select(conn, SQL);
         
         if(!resposta.next())
-            throw new SQLException("Nenhum usuário encontrado, login e/ou senha incorretos");
+            throw new SQLException("Nenhum usuï¿½rio encontrado, login e/ou senha incorretos");
         
         this.Nome = resposta.getString("nome");
         this.Telefone = resposta.getString("telefone");
         this.Email = resposta.getString("email");
         this.IdUsuario = resposta.getInt("id_usuario");
+        this.Funcionario = resposta.getBoolean("funcionario");
        
         return true;
     }

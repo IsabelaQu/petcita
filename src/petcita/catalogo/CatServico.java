@@ -42,6 +42,10 @@ public class CatServico extends Catalogo {
     }
 
     public void setMinDuracao(int minDuracao) {
+        if(minDuracao < 30)
+        {
+            throw new IllegalArgumentException("A duração não pode ser negativa");
+        }
         this.MinDuracao = minDuracao;
     }
 
@@ -100,10 +104,10 @@ public class CatServico extends Catalogo {
                     catServico.setServicoInterno(resposta.getBoolean("servico_interno"));
                     return catServico;
                 } catch (Exception ex) {
-                    throw new SQLException("Não foi possível preencher o produto");
+                    throw new SQLException("Não foi possível preencher o serviço");
             }
         } else {
-                throw new SQLException("Produto não encontrado");
+                throw new SQLException("Serviço não encontrado");
         }
     }
     
@@ -121,20 +125,27 @@ public class CatServico extends Catalogo {
         table.append("+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+\n");
         table.append("|   ID-Servico    |    Descricao    |    Categoria    |      Valor      |    Disponivel   |     Duracao     | Servico Interno |\n");
         table.append("+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+\n");
-
+        
         while (resposta.next()) {
-            this.setIdCatalogo(resposta.getInt("id_catalogo"));
-            this.setDisponivel(resposta.getBoolean("disponivel"));
-            this.setValor(resposta.getDouble("valor"));
-            this.setDescricao(resposta.getString("descricao"));
-            this.setCategoria(resposta.getString("categoria"));
-            this.setIdCatServico(resposta.getInt("id_cat_servico"));
-            this.setMinDuracao(resposta.getInt("min_duracao"));
-            this.setServicoInterno(resposta.getBoolean("servico_interno"));
+            try 
+            {
+                this.setIdCatalogo(resposta.getInt("id_catalogo"));
+                this.setDisponivel(resposta.getBoolean("disponivel"));
+                this.setValor(resposta.getDouble("valor"));
+                this.setDescricao(resposta.getString("descricao"));
+                this.setCategoria(resposta.getString("categoria"));
+                this.setIdCatServico(resposta.getInt("id_cat_servico"));
+                this.setMinDuracao(resposta.getInt("min_duracao"));
+                this.setServicoInterno(resposta.getBoolean("servico_interno"));
 
-            table.append(String.format("| %-15s | %-15s | %-15s | %-15s | %-15s | %-15s | %-15s |\n",
-                    this.getIdCatServico(), this.getDescricao(), this.getCategoria(), this.getValor(),
-                    this.getDisponivel(), this.getMinDuracao(), this.getServicoInterno()));
+                table.append(String.format("| %-15s | %-15s | %-15s | %-15s | %-15s | %-15s | %-15s |\n",
+                        this.getIdCatServico(), this.getDescricao(), this.getCategoria(), this.getValor(),
+                        this.getDisponivel(), this.getMinDuracao(), this.getServicoInterno()));
+            } 
+            catch (Exception ex) 
+            {
+                    throw new SQLException("Não foi possível preencher o produto para exibição");
+            }
         }
 
         table.append("+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+\n");

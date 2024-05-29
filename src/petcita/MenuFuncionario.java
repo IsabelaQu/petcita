@@ -6,6 +6,9 @@ package petcita;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Scanner;
 import petcita.catalogo.CatProduto;
 import petcita.catalogo.CatServico;
@@ -31,7 +34,7 @@ public class MenuFuncionario {
         this.Funcionario = funcionario;
     }
     
-    public void clienteMainMenu(Connection conn) throws SQLException, Exception {
+    public void funcionarioMainMenu(Connection conn) throws SQLException, Exception {
         String opcao = "", opcaoIterno = "";
         Scanner leitor = new Scanner(System.in);
         boolean sair = false, sairInterno = false;
@@ -187,6 +190,7 @@ public class MenuFuncionario {
                                 System.out.println("Valor:");
                                 itemCatalogoProduto.setValor(leitor.nextDouble());
                                 itemCatalogoProduto.setDisponivel(true);
+                                itemCatalogoProduto.setDtRegistro(ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()).toLocalDate());
 
                                 itemCatalogoProduto.criarCatalogo(conn);
 
