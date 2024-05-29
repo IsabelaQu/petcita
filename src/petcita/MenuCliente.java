@@ -43,7 +43,7 @@ public class MenuCliente {
     public void clienteMainMenu(Connection conn) throws SQLException, Exception {
         String opcao = "";
         Scanner leitor = new Scanner(System.in);
-        boolean sair = false;
+        boolean sair = false, sairInterno = false;
         PedidoItem carrinhoItem = new PedidoItem();
         PedidoAgendamento carrinhoAgendamento = new PedidoAgendamento();
         
@@ -58,10 +58,11 @@ public class MenuCliente {
             System.out.println("--------------------------------------------------");
             System.out.println("1. Escolher servico"); 
             System.out.println("2. Escolher produto");
-            System.out.println("3. Ver carrinho");
-            System.out.println("4. Remover produtos do carrinho");
-            System.out.println("5. Cancelar agendamentos no carrinho");
-            System.out.println("6. Sair");
+            System.out.println("3. Cadastre ou altere alguma informa��o do seu Animalzinho!");
+            System.out.println("4. Ver carrinho");
+            System.out.println("5. Remover produtos do carrinho");
+            System.out.println("6. Cancelar agendamentos no carrinho");
+            System.out.println("7. Sair");
             System.out.print("Escolha uma opcao: ");
             opcao = leitor.nextLine();
 
@@ -156,18 +157,155 @@ public class MenuCliente {
                     System.out.println("Produto adicionado ao Carrinho com sucesso!!");
                     
                     break;
+                    
+                    
                 case "3":
-                    //3. Ver carrinho
-                    System.out.println(carrinhoItem.listarPedidoItens(conn));
+                    //3. Cadastrando o Animal                  
+                    String opcaoAnimal;
+                    do {
+                        System.out.println("");
+                        System.out.println("---------------------PetCita----------------------");
+                        System.out.println("-------------GERENCIAR--SEUS--PETS----------------");
+                        System.out.println("1. Cadastrar seu Pet!");
+                        System.out.println("2. Alterar Animal");
+                        System.out.println("3. Remover Animal");
+                        System.out.println("4. Voltar");
+                        System.out.print("Escolha uma opcao: ");
+                        opcaoAnimal = leitor.nextLine();
+
+                        switch (opcaoAnimal) {
+                            case "1":
+                                // Cadastrar Animal
+                                Animal cadastroAnimal = new Animal();
+                                cadastroAnimal.setIdCliente(this.Cliente.getIdUsuario());
+
+                                System.out.print("Digite o nome do seu Pet: ");
+                                cadastroAnimal.setNome(leitor.nextLine());
+
+                                System.out.print("Digite a esp�cie do seu Pet: ");
+                                cadastroAnimal.setEspecie(leitor.nextLine());
+
+                                System.out.print("Digite a data de nascimento do seu aumigo (AAAA-MM-DD): ");
+                                cadastroAnimal.setDataNascimento(LocalDate.parse(leitor.nextLine()));
+
+                                System.out.print("Digite o porte do seu Pet (P/M/G): ");
+                                cadastroAnimal.setPorte(leitor.nextLine().charAt(0));
+
+                                cadastroAnimal.criarAnimal(conn);
+
+                                System.out.println("Seu Pet foi cadastrado com sucesso! Bem-vindo, aumigo!");
+                                break;
+
+                            case "2":
+                                    // Alterar Animal
+                                    System.out.print("Digite o ID do animal que deseja alterar: ");
+                                    int idAnimalAlterar = Integer.parseInt(leitor.nextLine());
+
+                                    Animal animalAlterar = new Animal();
+                                    animalAlterar = animalAlterar.buscarAnimalPorId(conn, idAnimalAlterar);
+
+                                    if (animalAlterar != null) {
+                                        String opcaoAlterar;
+                                        do {
+                                            System.out.println("");
+                                            System.out.println("-------------ALTERAR-INFORMA��ES-ANIMAL----------------");
+                                            System.out.println("1. Alterar Nome");
+                                            System.out.println("2. Alterar Esp�cie");
+                                            System.out.println("3. Alterar Data de Nascimento");
+                                            System.out.println("4. Alterar Porte");
+                                            System.out.println("5. Voltar");
+                                            System.out.print("Escolha uma opcao: ");
+                                            opcaoAlterar = leitor.nextLine();
+
+                                            switch (opcaoAlterar) {
+                                                case "1":
+                                                    System.out.print("Digite o novo nome do seu Pet: ");
+                                                    String novoNome = leitor.nextLine();
+                                                    if (!novoNome.isEmpty()) {
+                                                        animalAlterar.setNome(novoNome);
+                                                    }
+                                                    break;
+
+                                                case "2":
+                                                    System.out.print("Digite a nova esp�cie do seu Pet: ");
+                                                    String novaEspecie = leitor.nextLine();
+                                                    if (!novaEspecie.isEmpty()) {
+                                                        animalAlterar.setEspecie(novaEspecie);
+                                                    }
+                                                    break;
+
+                                                case "3":
+                                                    System.out.print("Digite a nova data de nascimento do seu aumigo (AAAA-MM-DD): ");
+                                                    String novaDataNascimento = leitor.nextLine();
+                                                    if (!novaDataNascimento.isEmpty()) {
+                                                        animalAlterar.setDataNascimento(LocalDate.parse(novaDataNascimento));
+                                                    }
+                                                    break;
+
+                                                case "4":
+                                                    System.out.print("Digite o novo porte do seu Pet (P/M/G): ");
+                                                    String novoPorte = leitor.nextLine();
+                                                    if (!novoPorte.isEmpty()) {
+                                                        animalAlterar.setPorte(novoPorte.charAt(0));
+                                                    }
+                                                    break;
+
+                                                case "5":
+                                                    // Voltar
+                                                    break;
+
+                                                default:
+                                                    System.out.println("Op��o inv�lida! Tente novamente.");
+                                            }
+                                        } while (!opcaoAlterar.equals("5"));
+
+                                        animalAlterar.atualizarAnimal(conn);
+
+                                        System.out.println("Informa��es do Pet alteradas com sucesso!");
+                                    } else {
+                                        System.out.println("Animal n�o encontrado.");
+                                    }
+                                    break;
+                                    
+                            case "3":
+                                // Remover Animal
+                                System.out.print("Digite o ID do animal que deseja remover: ");
+                                int idAnimalRemover = Integer.parseInt(leitor.nextLine());
+
+                                Animal animalRemover = new Animal();
+                                if (animalRemover.deletarAnimal(conn, idAnimalRemover)) {
+                                    System.out.println("Animal removido com sucesso!");
+                                } else {
+                                    System.out.println("Animal n�o encontrado ou erro ao remover.");
+                                }
+                                break;
+
+                            case "4":
+                                System.out.println("Saindo...");
+                                sairInterno = true;
+                                break;
+                            default:
+                                System.out.println("Opção invalida! Tente novamente.");
+                        }
+                    
+                    } while (!sairInterno);
+                    
+                    sairInterno = false;
+                    
+                    break;  
+                case "4":
+                    //4. Ver carrinho
+                    carrinhoItem.listarPedidoItens(conn);
                     
                     System.out.println("");
                     
                     System.out.println(carrinhoAgendamento.listarPedidoAgendamentos(conn));
                     
                     break;
-                case "4":
-                    //4. Remover produtos do carrinho
-                    System.out.println(carrinhoItem.listarPedidoItens(conn));
+                    
+                case "5":
+                    //5. Remover produtos do carrinho
+                    carrinhoItem.listarPedidoItens(conn);
                     
                     System.out.println("");
                     System.out.println("Qual produto voc� gostaria de remover do carrinho?");
@@ -188,9 +326,9 @@ public class MenuCliente {
                     
                     System.out.println("Produto removido do carrinho com sucesso!!");
                     break;
-                case "5":
-                    //5. Cancelar agendamentos no carrinho
-                    System.out.println(carrinhoAgendamento.listarPedidoAgendamentos(conn));
+                case "6":
+                    //6. Cancelar agendamentos no carrinho
+                    carrinhoAgendamento.listarPedidoAgendamentos(conn);
                     System.out.println("");
                     System.out.println("Qual agendamento voc� gostaria de cancelar?");
                     
@@ -210,8 +348,8 @@ public class MenuCliente {
                     
                     System.out.println("Agendamento cancelado com sucesso!!");
                     break;
-                case "6":
-                    //6. Sair
+                case "7":
+                    //7. Sair
                     System.out.println("Saindo...");
                     sair = true;
                     break;
